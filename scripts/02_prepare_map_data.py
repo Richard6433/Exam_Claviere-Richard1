@@ -10,6 +10,7 @@ Reads:
 Writes:
     docs/data/events_by_region.json           (~one row per region)
     docs/data/regions.geojson                 (simplified for fast browser load)
+    docs/data/schools.json                    (compact [lat, lon] pairs)
 
 The map shows the most recent 12 months of conflict activity per region.
 Each region marker carries a popup with: date range, breakdown by cause
@@ -31,6 +32,7 @@ SCHOOLS_IN = Path("data/raw/bfa_osm_schools.json")
 REGIONS_IN = Path("data/raw/bfa_admin1.geojson")
 EVENTS_OUT = Path("docs/data/events_by_region.json")
 REGIONS_OUT = Path("docs/data/regions.geojson")
+SCHOOLS_OUT = Path("docs/data/schools.json")
 
 WINDOW_DAYS = 365
 SIMPLIFY_TOLERANCE_DEG = 0.005
@@ -43,11 +45,12 @@ def school_age_by_region() -> dict:
     return {row.ADM1_FR.lower(): int(row.school_age) for row in pop.itertuples()}
 
 
-def schools_by_old_region() -> dict:
+def schools_data() -> tuple:
     """
-    Spatial-join OSM school points to the new 17-region polygons, then
-    aggregate to the old 13-region naming used by ACLED. Returns
-    {old_region_lowercase: school_count}.
+    Spatial-join OSM school points to the new 17-region polygons.
+    Returns (counts_per_old_region, points) where:
+      - counts_per_old_region maps {old_region_lowercase: count}
+      - points is a list of [lat, lon] pairs rounded to 4 decimals
     """
     with open(REGIONS_IN) as f:
         regions = json.load(f)
@@ -62,7 +65,7 @@ def schools_by_old_region() -> dict:
     print(f"  OSM schools loaded: {len(schools):,}")
 
     counts: dict = defaultdict(int)
-    matched = 0
+    points: list = []
     for el in schools:
         lat = el.get("lat") or el.get("center", {}).get("lat")
         lon = el.get("lon") or el.get("center", {}).get("lon")
@@ -72,10 +75,10 @@ def schools_by_old_region() -> dict:
         for idx in tree.query(pt):
             if polys[idx].contains(pt):
                 counts[old_names[idx].lower()] += 1
-                matched += 1
+                points.append([round(lat, 4), round(lon, 4)])
                 break
-    print(f"  Schools matched to a region: {matched:,}")
-    return dict(counts)
+    print(f"  Schools matched to a region: {len(points):,}")
+    return dict(counts), points
 
 
 def aggregate_acled(school_age: dict, schools: dict) -> dict:
@@ -136,8 +139,11 @@ def main() -> None:
     print(f"  {len(school_age)} regions, total 5-14 children: {total:,}")
 
     print("Counting OSM schools per region (point-in-polygon) ...")
-    schools = schools_by_old_region()
+    schools, points = schools_data()
     print(f"  Total schools assigned: {sum(schools.values()):,}")
+    with open(SCHOOLS_OUT, "w") as f:
+        json.dump(points, f)
+    print(f"  Wrote {SCHOOLS_OUT}  ({SCHOOLS_OUT.stat().st_size / 1024:.1f} KB)")
 
     print("Aggregating ACLED ...")
     events = aggregate_acled(school_age, schools)

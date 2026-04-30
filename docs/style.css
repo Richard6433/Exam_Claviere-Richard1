@@ -56,6 +56,12 @@ header p {
     color: #1f2937;
 }
 
+.legend-title.secondary {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+}
+
 .legend-row {
     display: flex;
     align-items: center;
@@ -74,6 +80,12 @@ header p {
 .dot.small { width: 8px;  height: 8px;  }
 .dot.mid   { width: 16px; height: 16px; }
 .dot.large { width: 28px; height: 28px; }
+.dot.school {
+    width: 4px;
+    height: 4px;
+    background: #1d4ed8;
+    opacity: 0.6;
+}
 
 .legend-source {
     margin-top: 10px;
