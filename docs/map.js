@@ -46,6 +46,15 @@ function popupHtml(r, maxBreakdown) {
         })
         .join("");
 
+    const pop = r.school_age_pop;
+    const rate = pop ? (r.events / pop) * 100_000 : null;
+    const popRow = pop
+        ? `<div class="children-row">
+               <strong>${fmt(pop)}</strong> school-age children (5-14) in this region
+               · <strong>${rate.toFixed(1)}</strong> events per 100,000 children
+           </div>`
+        : "";
+
     return `
         <div class="popup">
             <h3>${r.region}</h3>
@@ -60,6 +69,7 @@ function popupHtml(r, maxBreakdown) {
                     <div class="label">fatalities</div>
                 </div>
             </div>
+            ${popRow}
             <div class="breakdown-title">By cause</div>
             ${rows}
         </div>`;
@@ -69,9 +79,13 @@ Promise.all([
     fetch("data/regions.geojson").then((r) => r.json()),
     fetch("data/events_by_region.json").then((r) => r.json()),
 ]).then(([regions, events]) => {
+    const totalChildren = events.regions.reduce(
+        (sum, r) => sum + (r.school_age_pop || 0), 0,
+    );
     document.getElementById("period-line").textContent =
-        `Conflict events from ${fmtDate(events.period_start)} to ${fmtDate(events.period_end)} ` +
-        `— click a region marker for details`;
+        `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)} · ` +
+        `${fmt(totalChildren)} school-age children (5-14) live across these regions · ` +
+        `click a region for the breakdown`;
 
     L.geoJSON(regions, {
         style: {
