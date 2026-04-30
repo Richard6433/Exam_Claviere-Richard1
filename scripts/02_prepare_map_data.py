@@ -6,11 +6,13 @@ Reads:
     data/raw/bfa_admin1.geojson               (17 new regions, from HDX/IGB)
     data/raw/bfa_admpop_adm1_2023_5yr.csv     (UNFPA COD-PS 2023, age x sex)
     data/raw/bfa_osm_schools.json             (OSM schools, via Overpass)
+    data/raw/bfa_idmc_events.csv              (IDMC displacement events)
 
 Writes:
     docs/data/events_by_region.json           (~one row per region)
     docs/data/regions.geojson                 (simplified for fast browser load)
     docs/data/schools.json                    (compact [lat, lon] pairs)
+    docs/data/displacement.json               (recent IDMC events)
 
 The map shows the most recent 12 months of conflict activity per region.
 Each region marker carries a popup with: date range, breakdown by cause
@@ -29,10 +31,12 @@ from shapely.strtree import STRtree
 ACLED_CSV = Path("data/processed/acled_burkina_faso.csv")
 POP_CSV = Path("data/raw/bfa_admpop_adm1_2023_5yr.csv")
 SCHOOLS_IN = Path("data/raw/bfa_osm_schools.json")
+IDMC_IN = Path("data/raw/bfa_idmc_events.csv")
 REGIONS_IN = Path("data/raw/bfa_admin1.geojson")
 EVENTS_OUT = Path("docs/data/events_by_region.json")
 REGIONS_OUT = Path("docs/data/regions.geojson")
 SCHOOLS_OUT = Path("docs/data/schools.json")
+DISPLACEMENT_OUT = Path("docs/data/displacement.json")
 
 WINDOW_DAYS = 365
 SIMPLIFY_TOLERANCE_DEG = 0.005
@@ -79,6 +83,34 @@ def schools_data() -> tuple:
                 break
     print(f"  Schools matched to a region: {len(points):,}")
     return dict(counts), points
+
+
+def displacement_events() -> dict:
+    """Extract IDMC events as compact records for the map."""
+    df = pd.read_csv(IDMC_IN, parse_dates=["displacement_date"])
+    df = df.sort_values("displacement_date")
+
+    events = []
+    for r in df.itertuples():
+        location = (r.locations_name or "").replace(", Burkina Faso", "")
+        desc = (r.description or "")[:280]
+        events.append(
+            {
+                "lat": round(float(r.latitude), 4),
+                "lon": round(float(r.longitude), 4),
+                "date": str(r.displacement_date.date()),
+                "figure": int(r.figure),
+                "type": r.displacement_type,
+                "location": location,
+                "description": desc,
+            }
+        )
+    return {
+        "period_start": str(df["displacement_date"].min().date()),
+        "period_end": str(df["displacement_date"].max().date()),
+        "total_displaced": int(df["figure"].sum()),
+        "events": events,
+    }
 
 
 def aggregate_acled(school_age: dict, schools: dict) -> dict:
@@ -145,9 +177,20 @@ def main() -> None:
         json.dump(points, f)
     print(f"  Wrote {SCHOOLS_OUT}  ({SCHOOLS_OUT.stat().st_size / 1024:.1f} KB)")
 
+    print("Extracting IDMC displacement events ...")
+    displacement = displacement_events()
+    print(
+        f"  {len(displacement['events'])} events, "
+        f"{displacement['total_displaced']:,} people displaced "
+        f"({displacement['period_start']} -> {displacement['period_end']})"
+    )
+    DISPLACEMENT_OUT.parent.mkdir(parents=True, exist_ok=True)
+    with open(DISPLACEMENT_OUT, "w") as f:
+        json.dump(displacement, f, indent=2)
+    print(f"  Wrote {DISPLACEMENT_OUT}  ({DISPLACEMENT_OUT.stat().st_size / 1024:.1f} KB)")
+
     print("Aggregating ACLED ...")
     events = aggregate_acled(school_age, schools)
-    EVENTS_OUT.parent.mkdir(parents=True, exist_ok=True)
     with open(EVENTS_OUT, "w") as f:
         json.dump(events, f, indent=2)
     print(f"  Wrote {EVENTS_OUT}  ({EVENTS_OUT.stat().st_size / 1024:.1f} KB)")
