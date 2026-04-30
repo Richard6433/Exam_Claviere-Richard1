@@ -9,6 +9,7 @@
       "events": 373,
       "fatalities": 1195,
       "school_age_pop": 340222,
+      "schools_osm": 160,
       "breakdown": {
         "Strategic developments": 132,
         "Battles": 118,
@@ -27,6 +28,7 @@
       "events": 371,
       "fatalities": 1002,
       "school_age_pop": 661925,
+      "schools_osm": 413,
       "breakdown": {
         "Battles": 173,
         "Explosions/Remote violence": 74,
@@ -44,6 +46,7 @@
       "events": 306,
       "fatalities": 785,
       "school_age_pop": 591543,
+      "schools_osm": 364,
       "breakdown": {
         "Battles": 172,
         "Strategic developments": 52,
@@ -61,6 +64,7 @@
       "events": 258,
       "fatalities": 378,
       "school_age_pop": 614103,
+      "schools_osm": 379,
       "breakdown": {
         "Battles": 173,
         "Explosions/Remote violence": 32,
@@ -79,6 +83,7 @@
       "events": 229,
       "fatalities": 646,
       "school_age_pop": 555813,
+      "schools_osm": 764,
       "breakdown": {
         "Battles": 137,
         "Explosions/Remote violence": 39,
@@ -97,6 +102,7 @@
       "events": 152,
       "fatalities": 464,
       "school_age_pop": 518698,
+      "schools_osm": 244,
       "breakdown": {
         "Battles": 91,
         "Explosions/Remote violence": 19,
@@ -115,6 +121,7 @@
       "events": 50,
       "fatalities": 0,
       "school_age_pop": 801497,
+      "schools_osm": 1171,
       "breakdown": {
         "Strategic developments": 33,
         "Protests": 15,
@@ -131,6 +138,7 @@
       "events": 38,
       "fatalities": 82,
       "school_age_pop": 264176,
+      "schools_osm": 186,
       "breakdown": {
         "Battles": 18,
         "Protests": 9,
@@ -148,6 +156,7 @@
       "events": 28,
       "fatalities": 18,
       "school_age_pop": 682161,
+      "schools_osm": 329,
       "breakdown": {
         "Protests": 12,
         "Battles": 6,
@@ -166,6 +175,7 @@
       "events": 26,
       "fatalities": 19,
       "school_age_pop": 266117,
+      "schools_osm": 85,
       "breakdown": {
         "Protests": 10,
         "Battles": 8,
@@ -184,6 +194,7 @@
       "events": 12,
       "fatalities": 2,
       "school_age_pop": 519788,
+      "schools_osm": 755,
       "breakdown": {
         "Protests": 9,
         "Battles": 1,
@@ -200,6 +211,7 @@
       "events": 6,
       "fatalities": 0,
       "school_age_pop": 235320,
+      "schools_osm": 416,
       "breakdown": {
         "Protests": 3,
         "Explosions/Remote violence": 1,
@@ -216,6 +228,7 @@
       "events": 6,
       "fatalities": 0,
       "school_age_pop": 305354,
+      "schools_osm": 328,
       "breakdown": {
         "Protests": 6
       },
