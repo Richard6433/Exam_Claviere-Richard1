@@ -1,0 +1,213 @@
+{
+  "period_start": "2025-04-12",
+  "period_end": "2026-04-11",
+  "regions": [
+    {
+      "region": "Sahel",
+      "lat": 14.023900000000001,
+      "lon": -0.7679999999999998,
+      "events": 373,
+      "fatalities": 1195,
+      "breakdown": {
+        "Strategic developments": 132,
+        "Battles": 118,
+        "Explosions/Remote violence": 75,
+        "Violence against civilians": 38,
+        "Protests": 7,
+        "Riots": 3
+      },
+      "period_start": "2025-04-12",
+      "period_end": "2026-04-11"
+    },
+    {
+      "region": "Est",
+      "lat": 12.257000000000001,
+      "lon": 1.0058000000000002,
+      "events": 371,
+      "fatalities": 1002,
+      "breakdown": {
+        "Battles": 173,
+        "Explosions/Remote violence": 74,
+        "Strategic developments": 61,
+        "Violence against civilians": 54,
+        "Protests": 9
+      },
+      "period_start": "2025-04-12",
+      "period_end": "2026-04-11"
+    },
+    {
+      "region": "Boucle du Mouhoun",
+      "lat": 12.473799999999999,
+      "lon": -3.589199999999999,
+      "events": 306,
+      "fatalities": 785,
+      "breakdown": {
+        "Battles": 172,
+        "Strategic developments": 52,
+        "Violence against civilians": 29,
+        "Protests": 27,
+        "Explosions/Remote violence": 26
+      },
+      "period_start": "2025-04-12",
+      "period_end": "2026-04-11"
+    },
+    {
+      "region": "Centre-Nord",
+      "lat": 13.224300000000001,
+      "lon": -1.0306999999999995,
+      "events": 258,
+      "fatalities": 378,
+      "breakdown": {
+        "Battles": 173,
+        "Explosions/Remote violence": 32,
+        "Strategic developments": 20,
+        "Violence against civilians": 19,
+        "Protests": 13,
+        "Riots": 1
+      },
+      "period_start": "2025-04-12",
+      "period_end": "2026-04-11"
+    },
+    {
+      "region": "Nord",
+      "lat": 13.453,
+      "lon": -2.2504999999999993,
+      "events": 229,
+      "fatalities": 646,
+      "breakdown": {
+        "Battles": 137,
+        "Explosions/Remote violence": 39,
+        "Strategic developments": 26,
+        "Violence against civilians": 14,
+        "Protests": 12,
+        "Riots": 1
+      },
+      "period_start": "2025-04-12",
+      "period_end": "2026-04-11"
+    },
+    {
+      "region": "Centre-Est",
+      "lat": 11.718000000000002,
+      "lon": -0.27559999999999996,
+      "events": 152,
+      "fatalities": 464,
+      "breakdown": {
+        "Battles": 91,
+        "Explosions/Remote violence": 19,
+        "Violence against civilians": 17,
+        "Protests": 14,
+        "Strategic developments": 10,
+        "Riots": 1
+      },
+      "period_start": "2025-04-12",
+      "period_end": "2026-04-11"
+    },
+    {
+      "region": "Centre",
+      "lat": 12.3632,
+      "lon": -1.542,
+      "events": 50,
+      "fatalities": 0,
+      "breakdown": {
+        "Strategic developments": 33,
+        "Protests": 15,
+        "Riots": 1,
+        "Violence against civilians": 1
+      },
+      "period_start": "2025-04-12",
+      "period_end": "2026-04-11"
+    },
+    {
+      "region": "Cascades",
+      "lat": 10.309399999999998,
+      "lon": -4.4899,
+      "events": 38,
+      "fatalities": 82,
+      "breakdown": {
+        "Battles": 18,
+        "Protests": 9,
+        "Explosions/Remote violence": 8,
+        "Violence against civilians": 2,
+        "Strategic developments": 1
+      },
+      "period_start": "2025-04-19",
+      "period_end": "2026-03-28"
+    },
+    {
+      "region": "Hauts-Bassins",
+      "lat": 11.396099999999997,
+      "lon": -4.033500000000001,
+      "events": 28,
+      "fatalities": 18,
+      "breakdown": {
+        "Protests": 12,
+        "Battles": 6,
+        "Violence against civilians": 5,
+        "Strategic developments": 3,
+        "Explosions/Remote violence": 1,
+        "Riots": 1
+      },
+      "period_start": "2025-04-19",
+      "period_end": "2026-04-11"
+    },
+    {
+      "region": "Sud-Ouest",
+      "lat": 10.388399999999999,
+      "lon": -3.2821,
+      "events": 26,
+      "fatalities": 19,
+      "breakdown": {
+        "Protests": 10,
+        "Battles": 8,
+        "Explosions/Remote violence": 4,
+        "Violence against civilians": 2,
+        "Riots": 1,
+        "Strategic developments": 1
+      },
+      "period_start": "2025-04-26",
+      "period_end": "2026-02-07"
+    },
+    {
+      "region": "Centre-Ouest",
+      "lat": 11.9045,
+      "lon": -2.3039999999999994,
+      "events": 12,
+      "fatalities": 2,
+      "breakdown": {
+        "Protests": 9,
+        "Battles": 1,
+        "Explosions/Remote violence": 1,
+        "Strategic developments": 1
+      },
+      "period_start": "2025-04-26",
+      "period_end": "2026-01-24"
+    },
+    {
+      "region": "Centre-Sud",
+      "lat": 11.5867,
+      "lon": -1.0624,
+      "events": 6,
+      "fatalities": 0,
+      "breakdown": {
+        "Protests": 3,
+        "Explosions/Remote violence": 1,
+        "Riots": 1,
+        "Strategic developments": 1
+      },
+      "period_start": "2025-08-30",
+      "period_end": "2026-02-21"
+    },
+    {
+      "region": "Plateau-Central",
+      "lat": 12.4015,
+      "lon": -0.8891999999999999,
+      "events": 6,
+      "fatalities": 0,
+      "breakdown": {
+        "Protests": 6
+      },
+      "period_start": "2025-05-24",
+      "period_end": "2026-02-14"
+    }
+  ]
+}
