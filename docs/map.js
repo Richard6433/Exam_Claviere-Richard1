@@ -47,11 +47,16 @@ function popupHtml(r, maxBreakdown) {
         .join("");
 
     const pop = r.school_age_pop;
+    const schools = r.schools_osm;
     const rate = pop ? (r.events / pop) * 100_000 : null;
+    const schoolsLine = schools
+        ? ` · <strong>${fmt(schools)}</strong> schools mapped (OSM)`
+        : "";
     const popRow = pop
         ? `<div class="children-row">
-               <strong>${fmt(pop)}</strong> school-age children (5-14) in this region
+               <strong>${fmt(pop)}</strong> school-age children (5-14)
                · <strong>${rate.toFixed(1)}</strong> events per 100,000 children
+               ${schoolsLine}
            </div>`
         : "";
 
