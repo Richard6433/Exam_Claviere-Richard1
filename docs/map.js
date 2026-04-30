@@ -36,6 +36,42 @@ function radiusFor(events, maxEvents) {
     return minR + (maxR - minR) * Math.sqrt(events / maxEvents);
 }
 
+function fmtFullDate(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString("en-GB", {
+        day: "numeric", month: "long", year: "numeric",
+    });
+}
+
+// Triangle marker for displacement events. Size scales with `figure`
+// (number of people displaced) using a square-root mapping for fairness.
+function displacementIcon(figure, maxFigure) {
+    const minH = 12, maxH = 26;
+    const h = minH + (maxH - minH) * Math.sqrt(figure / maxFigure);
+    const w = h * 1.1;
+    const halfW = w / 2;
+    return L.divIcon({
+        className: "displacement-icon-wrap",
+        html: `<div class="displacement-tri"
+                    style="border-left-width:${halfW}px;
+                           border-right-width:${halfW}px;
+                           border-bottom-width:${h}px"></div>`,
+        iconSize: [w, h],
+        iconAnchor: [halfW, h],
+    });
+}
+
+function displacementPopupHtml(e) {
+    return `
+        <div class="popup popup-disp">
+            <div class="disp-date">${fmtFullDate(e.date)}</div>
+            <h3>${fmt(e.figure)} displaced</h3>
+            <div class="disp-loc">${e.location}</div>
+            <div class="disp-tag">${e.type}</div>
+            <p class="disp-desc">${e.description}…</p>
+        </div>`;
+}
+
 function popupHtml(r, maxBreakdown) {
     const rows = Object.entries(r.breakdown)
         .map(([name, count]) => {
@@ -87,14 +123,17 @@ Promise.all([
     fetch("data/regions.geojson").then((r) => r.json()),
     fetch("data/events_by_region.json").then((r) => r.json()),
     fetch("data/schools.json").then((r) => r.json()),
-]).then(([regions, events, schools]) => {
+    fetch("data/displacement.json").then((r) => r.json()),
+]).then(([regions, events, schools, displacement]) => {
     const totalChildren = events.regions.reduce(
         (sum, r) => sum + (r.school_age_pop || 0), 0,
     );
     document.getElementById("period-line").textContent =
         `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)} · ` +
-        `${fmt(totalChildren)} school-age children (5-14) live across these regions · ` +
-        `click a region for the breakdown`;
+        `${fmt(totalChildren)} school-age children (5-14) · ` +
+        `${fmt(displacement.total_displaced)} newly displaced ` +
+        `(${displacement.events.length} reported events, ` +
+        `${fmtDate(displacement.period_start)} → ${fmtDate(displacement.period_end)})`;
 
     L.geoJSON(regions, {
         style: {
@@ -135,6 +174,17 @@ Promise.all([
             fillOpacity: 0.7,
         })
             .bindPopup(popupHtml(r, maxBreakdown), { maxWidth: 320 })
+            .addTo(map);
+    });
+
+    // Displacement events — sit on top of the conflict circles, smaller
+    // amber triangles tied to specific lat/lon and dates.
+    const maxFigure = Math.max(...displacement.events.map((e) => e.figure));
+    displacement.events.forEach((e) => {
+        L.marker([e.lat, e.lon], {
+            icon: displacementIcon(e.figure, maxFigure),
+        })
+            .bindPopup(displacementPopupHtml(e), { maxWidth: 320 })
             .addTo(map);
     });
 });
