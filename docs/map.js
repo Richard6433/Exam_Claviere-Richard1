@@ -8,6 +8,9 @@ const BF_ZOOM = 7;
 
 const map = L.map("map", { zoomControl: true }).setView(BF_CENTER, BF_ZOOM);
 
+// A canvas renderer keeps the 5,000+ school dots fast.
+const schoolsCanvas = L.canvas({ padding: 0.3 });
+
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
@@ -83,7 +86,8 @@ function popupHtml(r, maxBreakdown) {
 Promise.all([
     fetch("data/regions.geojson").then((r) => r.json()),
     fetch("data/events_by_region.json").then((r) => r.json()),
-]).then(([regions, events]) => {
+    fetch("data/schools.json").then((r) => r.json()),
+]).then(([regions, events, schools]) => {
     const totalChildren = events.regions.reduce(
         (sum, r) => sum + (r.school_age_pop || 0), 0,
     );
@@ -106,6 +110,18 @@ Promise.all([
             });
         },
     }).addTo(map);
+
+    // Schools layer — small subtle blue dots, drawn on canvas under the
+    // conflict markers so the red circles remain the visual headline.
+    schools.forEach(([lat, lon]) => {
+        L.circleMarker([lat, lon], {
+            renderer: schoolsCanvas,
+            radius: 2,
+            stroke: false,
+            fillColor: "#1d4ed8",
+            fillOpacity: 0.45,
+        }).addTo(map);
+    });
 
     const maxEvents = Math.max(...events.regions.map((r) => r.events));
 
