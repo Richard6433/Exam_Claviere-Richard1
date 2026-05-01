@@ -25,10 +25,13 @@ from collections import defaultdict
 from datetime import timedelta
 from pathlib import Path
 import json
+import re
 
 import pandas as pd
 from shapely.geometry import shape, mapping, Point
 from shapely.strtree import STRtree
+
+ATTRIBUTION_RE = re.compile(r"According to ([^,.;]+)", re.IGNORECASE)
 
 POP_XLSX = Path("data/raw/bfa_admpop_2023_5yr.xlsx")
 ACLED_PV = Path("data/raw/bfa_acled_monthly_political_violence.xlsx")
@@ -211,20 +214,30 @@ def simplify_regions() -> dict:
 
 
 def displacement_events() -> dict:
-    df = pd.read_csv(IDMC_IN, parse_dates=["displacement_date"])
+    df = pd.read_csv(
+        IDMC_IN,
+        parse_dates=[
+            "displacement_date",
+            "displacement_start_date",
+            "displacement_end_date",
+        ],
+    )
     df = df.sort_values("displacement_date")
     events = []
     for r in df.itertuples():
         location = (r.locations_name or "").replace(", Burkina Faso", "")
-        desc = (r.description or "")[:280]
+        desc = r.description or ""
+        m = ATTRIBUTION_RE.search(desc)
+        attribution = m.group(1).strip() if m else None
         events.append({
             "lat": round(float(r.latitude), 4),
             "lon": round(float(r.longitude), 4),
             "date": str(r.displacement_date.date()),
+            "start_date": str(r.displacement_start_date.date()),
+            "end_date": str(r.displacement_end_date.date()),
             "figure": int(r.figure),
-            "type": r.displacement_type,
             "location": location,
-            "description": desc,
+            "attribution": attribution,
         })
     return {
         "period_start": str(df["displacement_date"].min().date()),
@@ -232,6 +245,24 @@ def displacement_events() -> dict:
         "total_displaced": int(df["figure"].sum()),
         "events": events,
     }
+
+
+def displaced_by_new_region(disp: dict, regions_gj: dict) -> dict:
+    """Sum people displaced per new admin1 by point-in-polygon over event coordinates."""
+    polys, pcodes = [], []
+    for feat in regions_gj["features"]:
+        polys.append(shape(feat["geometry"]))
+        pcodes.append(feat["properties"]["pcode"])
+    tree = STRtree(polys)
+
+    out: dict = defaultdict(int)
+    for e in disp["events"]:
+        pt = Point(e["lon"], e["lat"])
+        for idx in tree.query(pt):
+            if polys[idx].contains(pt):
+                out[pcodes[idx]] += e["figure"]
+                break
+    return dict(out)
 
 
 def main() -> None:
@@ -277,6 +308,10 @@ def main() -> None:
         json.dump(disp, f, indent=2)
     print(f"  Wrote {DISPLACEMENT_OUT}  ({DISPLACEMENT_OUT.stat().st_size / 1024:.1f} KB)")
 
+    print("Aggregating displacement per new region (point-in-polygon) ...")
+    displaced_per_region = displaced_by_new_region(disp, regions)
+    print(f"  Regions with recorded displacement: {len(displaced_per_region)}")
+
     print("Building per-region records ...")
     records = []
     for pcode, (lat, lon, name) in centroids.items():
@@ -290,6 +325,7 @@ def main() -> None:
             "fatalities": a["fatalities"],
             "school_age_pop": school_age.get(pcode, 0),
             "schools_osm": schools.get(pcode, 0),
+            "displaced_recent": displaced_per_region.get(pcode, 0),
             "breakdown": a["breakdown"],
             "period_start": acled["period_start"],
             "period_end": acled["period_end"],

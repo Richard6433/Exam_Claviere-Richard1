@@ -11,6 +11,7 @@
       "fatalities": 381,
       "school_age_pop": 614103,
       "schools_osm": 379,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 232,
         "Demonstrations": 13,
@@ -28,6 +29,7 @@
       "fatalities": 658,
       "school_age_pop": 555813,
       "schools_osm": 764,
+      "displaced_recent": 6849,
       "breakdown": {
         "Political violence": 206,
         "Demonstrations": 12,
@@ -45,6 +47,7 @@
       "fatalities": 498,
       "school_age_pop": 228293,
       "schools_osm": 70,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 143,
         "Demonstrations": 3,
@@ -62,6 +65,7 @@
       "fatalities": 758,
       "school_age_pop": 268286,
       "schools_osm": 215,
+      "displaced_recent": 32512,
       "breakdown": {
         "Political violence": 192,
         "Demonstrations": 12,
@@ -79,6 +83,7 @@
       "fatalities": 594,
       "school_age_pop": 188410,
       "schools_osm": 48,
+      "displaced_recent": 776,
       "breakdown": {
         "Political violence": 184,
         "Demonstrations": 4,
@@ -96,6 +101,7 @@
       "fatalities": 523,
       "school_age_pop": 518698,
       "schools_osm": 244,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 141,
         "Demonstrations": 15,
@@ -113,6 +119,7 @@
       "fatalities": 716,
       "school_age_pop": 111929,
       "schools_osm": 90,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 103,
         "Demonstrations": 4,
@@ -130,6 +137,7 @@
       "fatalities": 219,
       "school_age_pop": 265319,
       "schools_osm": 56,
+      "displaced_recent": 4391,
       "breakdown": {
         "Political violence": 80,
         "Demonstrations": 5,
@@ -147,6 +155,7 @@
       "fatalities": 154,
       "school_age_pop": 323257,
       "schools_osm": 149,
+      "displaced_recent": 8460,
       "breakdown": {
         "Political violence": 49,
         "Demonstrations": 16,
@@ -164,6 +173,7 @@
       "fatalities": 236,
       "school_age_pop": 208196,
       "schools_osm": 309,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 57,
         "Demonstrations": 1,
@@ -181,6 +191,7 @@
       "fatalities": 0,
       "school_age_pop": 801497,
       "schools_osm": 1173,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 1,
         "Demonstrations": 16,
@@ -198,6 +209,7 @@
       "fatalities": 83,
       "school_age_pop": 264176,
       "schools_osm": 186,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 30,
         "Demonstrations": 9,
@@ -215,6 +227,7 @@
       "fatalities": 42,
       "school_age_pop": 682161,
       "schools_osm": 329,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 15,
         "Demonstrations": 12,
@@ -232,6 +245,7 @@
       "fatalities": 19,
       "school_age_pop": 266117,
       "schools_osm": 85,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 15,
         "Demonstrations": 10,
@@ -249,6 +263,7 @@
       "fatalities": 2,
       "school_age_pop": 519788,
       "schools_osm": 755,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 2,
         "Demonstrations": 10,
@@ -266,6 +281,7 @@
       "fatalities": 0,
       "school_age_pop": 235320,
       "schools_osm": 414,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 2,
         "Demonstrations": 3,
@@ -283,6 +299,7 @@
       "fatalities": 0,
       "school_age_pop": 305354,
       "schools_osm": 325,
+      "displaced_recent": 0,
       "breakdown": {
         "Political violence": 0,
         "Demonstrations": 6,

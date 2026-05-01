@@ -53,14 +53,14 @@ function colorForRate(rate) {
     return "#fed976";
 }
 
-function displacementIcon(figure, maxFigure) {
-    const minH = 11, maxH = 24;
+function displacementIcon(figure, maxFigure, ageClass) {
+    const minH = 11, maxH = 26;
     const h = minH + (maxH - minH) * Math.sqrt(figure / maxFigure);
     const w = h * 1.1;
     const halfW = w / 2;
     return L.divIcon({
         className: "displacement-icon-wrap",
-        html: `<div class="displacement-tri"
+        html: `<div class="displacement-tri ${ageClass}"
                     style="border-left-width:${halfW}px;
                            border-right-width:${halfW}px;
                            border-bottom-width:${h}px"></div>`,
@@ -70,28 +70,43 @@ function displacementIcon(figure, maxFigure) {
 }
 
 function displacementPopupHtml(e) {
+    const dateRange =
+        e.start_date && e.end_date && e.start_date !== e.end_date
+            ? `${fmtFullDate(e.start_date)} – ${fmtFullDate(e.end_date)}`
+            : fmtFullDate(e.date);
+    const attribution = e.attribution
+        ? `<li>According to <strong>${e.attribution}</strong></li>`
+        : "";
     return `
         <div class="popup popup-disp">
-            <div class="disp-date">${fmtFullDate(e.date)}</div>
-            <h3>${fmt(e.figure)} displaced</h3>
-            <div class="disp-loc">${e.location}</div>
-            <div class="disp-tag">${e.type}</div>
-            <p class="disp-desc">${e.description}…</p>
+            <ul class="disp-facts">
+                <li><strong>${fmt(e.figure)}</strong> people displaced</li>
+                <li>${dateRange}</li>
+                ${attribution}
+                <li>${e.location}</li>
+            </ul>
         </div>`;
 }
 
-function popupHtml(r) {
+function popupHtml(r, dispWindowLabel) {
     const pop = r.school_age_pop;
     const schools = r.schools_osm;
+    const displaced = r.displaced_recent || 0;
     const rate = pop ? (r.events / pop) * 100000 : null;
     const schoolsLine = schools
         ? ` · <strong>${fmt(schools)}</strong> schools mapped (OSM)`
         : "";
-    const popRow = pop
+    const childrenRow = pop
         ? `<div class="children-row">
                <strong>${fmt(pop)}</strong> school-age children (5-14)
                · <strong>${rate.toFixed(1)}</strong> events per 100,000 children
                ${schoolsLine}
+           </div>`
+        : "";
+    const displacedRow = displaced
+        ? `<div class="displaced-row">
+               <strong>${fmt(displaced)}</strong> people newly displaced from this region
+               ${dispWindowLabel ? `<span class="disp-window">(${dispWindowLabel})</span>` : ""}
            </div>`
         : "";
 
@@ -103,7 +118,8 @@ function popupHtml(r) {
                 <span class="num">${fmt(r.events)}</span>
                 <span class="label">conflict events (last 12 months)</span>
             </div>
-            ${popRow}
+            ${childrenRow}
+            ${displacedRow}
         </div>`;
 }
 
@@ -126,6 +142,28 @@ function renderHeaderStats(events, displacement) {
     );
 }
 
+function renderInsightBanner(events, displacement) {
+    const totalEvents = events.regions.reduce((s, r) => s + r.events, 0);
+    const totalChildren = events.regions.reduce(
+        (s, r) => s + (r.school_age_pop || 0), 0,
+    );
+    const ranked = events.regions
+        .filter((r) => r.school_age_pop)
+        .map((r) => ({ ...r, rate: (r.events / r.school_age_pop) * 100000 }))
+        .sort((a, b) => b.rate - a.rate);
+    const top = ranked[0];
+    const totalDisplaced = displacement.total_displaced;
+    const dispWindow = `${fmtDate(displacement.period_start)} – ${fmtDate(displacement.period_end)}`;
+
+    setText(
+        "insight-text",
+        `Across Burkina Faso's 17 regions, ${fmt(totalEvents)} conflict events ` +
+        `affected ${fmtCompact(totalChildren)} school-age children in the last year. ` +
+        `Pressure peaks in ${top.region} (${top.rate.toFixed(0)} events per 100k children). ` +
+        `${fmt(totalDisplaced)} people were newly displaced (${dispWindow}).`,
+    );
+}
+
 function safe(label, fn) {
     try { fn(); } catch (e) { console.error(`[map] ${label} failed:`, e); }
 }
@@ -144,6 +182,10 @@ Promise.all([
             displacement.events.length, "displacement events");
 
         safe("header", () => renderHeaderStats(events, displacement));
+        safe("insight", () => renderInsightBanner(events, displacement));
+
+        const dispWindowLabel =
+            `${fmtDate(displacement.period_start)} – ${fmtDate(displacement.period_end)}`;
 
         const byPcode = Object.fromEntries(
             events.regions.map((r) => [r.pcode, r]),
@@ -172,7 +214,7 @@ Promise.all([
                         direction: "center",
                         className: "region-label",
                     });
-                    if (r) layer.bindPopup(popupHtml(r), { maxWidth: 320 });
+                    if (r) layer.bindPopup(popupHtml(r, dispWindowLabel), { maxWidth: 320 });
                     layer.on({
                         mouseover: (e) =>
                             e.target.setStyle({
@@ -207,9 +249,18 @@ Promise.all([
             const maxFigure = Math.max(
                 ...displacement.events.map((e) => e.figure),
             );
+            const maxDateMs = Math.max(
+                ...displacement.events.map((e) => new Date(e.date).getTime()),
+            );
+            const dayMs = 1000 * 60 * 60 * 24;
             displacement.events.forEach((e) => {
+                const daysOld = (maxDateMs - new Date(e.date).getTime()) / dayMs;
+                const ageClass =
+                    daysOld < 30 ? "fresh"
+                    : daysOld < 90 ? "recent"
+                    : "older";
                 L.marker([e.lat, e.lon], {
-                    icon: displacementIcon(e.figure, maxFigure),
+                    icon: displacementIcon(e.figure, maxFigure, ageClass),
                 })
                     .bindPopup(displacementPopupHtml(e), { maxWidth: 320 })
                     .addTo(map);
