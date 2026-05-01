@@ -458,25 +458,6 @@ path.leaflet-interactive {
     font-weight: 700;
 }
 
-.popup .displaced-row .row-window {
-    display: block;
-    color: #64748b;
-    font-size: 11px;
-    margin-top: 2px;
-    font-weight: 400;
-}
-
-#about-panel .about-note {
-    background: #fffbeb;
-    border-left: 3px solid #f59e0b;
-    border-radius: 0 4px 4px 0;
-    padding: 10px 12px;
-    font-size: 12.5px;
-    color: #1f2937;
-    line-height: 1.5;
-    margin: 0 0 12px 0;
-}
-
 /* ----- Displacement marker + popup ----- */
 .displacement-icon-wrap {
     background: transparent;

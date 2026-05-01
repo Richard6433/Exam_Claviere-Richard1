@@ -123,10 +123,10 @@ function displacementPopupHtml(e) {
         </div>`;
 }
 
-function popupHtml(r, gcorrPeriod) {
+function popupHtml(r) {
     const pop = r.school_age_pop;
     const schools = r.schools_osm;
-    const idps = r.idps_origin_gcorr || 0;
+    const displaced = r.displaced_recent || 0;
     const rate = pop ? (r.events / pop) * 100000 : null;
     const schoolsLine = schools
         ? ` · <strong>${fmt(schools)}</strong> schools mapped (OSM)`
@@ -138,10 +138,9 @@ function popupHtml(r, gcorrPeriod) {
                ${schoolsLine}
            </div>`
         : "";
-    const idpsRow = idps
+    const displacedRow = displaced
         ? `<div class="displaced-row">
-               <strong>${fmt(idps)}</strong> IDPs originated from this region
-               <span class="row-window">${gcorrPeriod}</span>
+               <strong>${fmt(displaced)}</strong> people newly displaced
            </div>`
         : "";
 
@@ -153,7 +152,7 @@ function popupHtml(r, gcorrPeriod) {
                 <span class="label">conflict events</span>
             </div>
             ${childrenRow}
-            ${idpsRow}
+            ${displacedRow}
         </div>`;
 }
 
@@ -195,10 +194,6 @@ Promise.all([
 
         safe("header", () => renderHeaderStats(events, displacement));
 
-        const gcorrPeriod = events.gcorr_period_start && events.gcorr_period_end
-            ? `${fmtDate(events.gcorr_period_start)} → ${fmtDate(events.gcorr_period_end)}`
-            : "";
-
         const byPcode = Object.fromEntries(
             events.regions.map((r) => [r.pcode, r]),
         );
@@ -226,7 +221,7 @@ Promise.all([
                         direction: "center",
                         className: "region-label",
                     });
-                    if (r) layer.bindPopup(popupHtml(r, gcorrPeriod), { maxWidth: 320 });
+                    if (r) layer.bindPopup(popupHtml(r), { maxWidth: 320 });
                     layer.on({
                         mouseover: (e) =>
                             e.target.setStyle({
