@@ -362,6 +362,17 @@ path.leaflet-interactive {
         drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45))
         drop-shadow(0 5px 10px rgba(0, 0, 0, 0.18));
     opacity: 1;
+    transform-origin: 50% 100%;
+    transition: transform 150ms ease, filter 150ms ease;
+    cursor: pointer;
+}
+
+.displacement-icon-wrap:hover .displacement-tri {
+    transform: scale(1.18);
+    filter:
+        drop-shadow(0 0 3px #ffffff)
+        drop-shadow(0 3px 5px rgba(0, 0, 0, 0.55))
+        drop-shadow(0 6px 12px rgba(0, 0, 0, 0.22));
 }
 
 .popup.popup-disp {
