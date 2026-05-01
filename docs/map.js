@@ -161,7 +161,7 @@ Promise.all([
                         color: "#ffffff",
                         weight: 1.5,
                         fillColor: colorForRate(rate),
-                        fillOpacity: 0.85,
+                        fillOpacity: 0.7,
                         opacity: 1,
                     };
                 },
@@ -178,13 +178,13 @@ Promise.all([
                             e.target.setStyle({
                                 weight: 2.5,
                                 color: "#0f172a",
-                                fillOpacity: 0.95,
+                                fillOpacity: 0.85,
                             }),
                         mouseout: (e) =>
                             e.target.setStyle({
                                 weight: 1.5,
                                 color: "#ffffff",
-                                fillOpacity: 0.85,
+                                fillOpacity: 0.7,
                             }),
                     });
                 },
@@ -195,10 +195,10 @@ Promise.all([
             schools.forEach(([lat, lon]) => {
                 L.circleMarker([lat, lon], {
                     renderer: schoolsCanvas,
-                    radius: 1.8,
+                    radius: 2.4,
                     stroke: false,
-                    fillColor: "#1e3a8a",
-                    fillOpacity: 0.5,
+                    fillColor: "#0c4a6e",
+                    fillOpacity: 0.8,
                 }).addTo(map);
             });
         });
