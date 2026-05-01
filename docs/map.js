@@ -1,7 +1,7 @@
 // Burkina Faso — conflict pressure on school-age population.
 // Three layers:
 //   - 17 region polygons coloured by events per 100,000 children (choropleth)
-//   - small blue dots for OSM schools
+//   - small dots for OSM schools (white stroke for crisp contrast)
 //   - amber triangles for recent IDMC displacement events
 // Header strip shows total events / displaced / school-age children.
 
@@ -229,10 +229,11 @@ Promise.all([
             schools.forEach(([lat, lon]) => {
                 L.circleMarker([lat, lon], {
                     renderer: schoolsCanvas,
-                    radius: 1.2,
-                    stroke: false,
-                    fillColor: "#1f2937",
-                    fillOpacity: 0.35,
+                    radius: 1.8,
+                    weight: 0.6,
+                    color: "#ffffff",
+                    fillColor: "#1e293b",
+                    fillOpacity: 0.85,
                 }).addTo(map);
             });
         });

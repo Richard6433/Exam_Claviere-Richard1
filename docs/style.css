@@ -187,11 +187,13 @@ header h1 {
 }
 
 .dot.school {
-    width: 4px;
-    height: 4px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: #1f2937;
-    opacity: 0.55;
+    background: #1e293b;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 0 0.5px rgba(15, 23, 42, 0.25);
+    box-sizing: border-box;
 }
 
 .dot.displacement {
