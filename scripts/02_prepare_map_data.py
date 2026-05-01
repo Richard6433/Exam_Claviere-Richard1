@@ -14,7 +14,6 @@ Reads:
 Writes:
     docs/data/regions.geojson           (simplified 17-region polygons)
     docs/data/events-by-region.json     (one record per NEW region)
-    docs/data/schools.json              (compact [lat, lon] pairs)
     docs/data/displacement.json         (recent IDMC events)
 
 Key trick: ACLED and UNFPA both use the OLD admin2 pcodes (45 provinces).
@@ -45,7 +44,6 @@ ADMIN2_IN = Path("data/raw/cod/bfa_admin2.geojson")
 
 EVENTS_OUT = Path("docs/data/events-by-region.json")
 REGIONS_OUT = Path("docs/data/regions.geojson")
-SCHOOLS_OUT = Path("docs/data/schools.json")
 DISPLACEMENT_OUT = Path("docs/data/displacement.json")
 
 WINDOW_MONTHS = 12
@@ -289,10 +287,7 @@ def main() -> None:
     print(f"  Total: {sum(school_age.values()):,} children across {len(school_age)} new regions")
 
     print("Counting OSM schools per new region (point-in-polygon) ...")
-    schools, points = schools_by_new_region(prov_to_region, regions)
-    with open(SCHOOLS_OUT, "w") as f:
-        json.dump(points, f)
-    print(f"  Wrote {SCHOOLS_OUT}  ({SCHOOLS_OUT.stat().st_size / 1024:.1f} KB)")
+    schools, _ = schools_by_new_region(prov_to_region, regions)
 
     print("Aggregating ACLED political violence + demonstrations per new region ...")
     acled = acled_per_new_region(prov_to_region)
