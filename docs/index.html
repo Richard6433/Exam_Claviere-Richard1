@@ -9,7 +9,7 @@
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin="">
-    <link rel="stylesheet" href="style.css?v=20260501h">
+    <link rel="stylesheet" href="style.css?v=20260501i">
 </head>
 <body>
     <header>
@@ -34,6 +34,29 @@
     </header>
 
     <div id="map"></div>
+    <div id="map-vignette"></div>
+
+    <button id="about-toggle" type="button" aria-label="About this map">
+        <span aria-hidden="true">ⓘ</span> About
+    </button>
+
+    <div id="about-backdrop" class="hidden"></div>
+    <div id="about-panel" class="hidden" role="dialog" aria-labelledby="about-title">
+        <button id="about-close" type="button" aria-label="Close">×</button>
+        <h3 id="about-title">About this map</h3>
+        <p>What you're looking at: <strong>conflict pressure on school-age children (5-14)</strong> across Burkina Faso's 17 regions.</p>
+        <ul class="about-list">
+            <li><strong>Choropleth (yellow → red):</strong> events per 100,000 children — a population-normalised intensity that compares regions of different sizes fairly.</li>
+            <li><strong>Black triangles:</strong> recent displacement events (3 Nov 2025 → 15 Mar 2026), sized by people displaced.</li>
+            <li><strong>Dark blue dots:</strong> schools mapped in OpenStreetMap (partial coverage).</li>
+            <li><strong>Permanent labels:</strong> the 17 regions of Burkina Faso (post-2025 reorganisation).</li>
+        </ul>
+        <p class="about-meta">
+            <strong>Period:</strong> 1 April 2025 → 30 April 2026<br>
+            <strong>Sources:</strong> ACLED · IDMC · UNFPA 2023 · OpenStreetMap · OCHA / IGB
+        </p>
+        <p class="about-tip"><em>Tip: click any region to zoom in. Use the ↺ button (top-left) to return to the country view.</em></p>
+    </div>
 
     <div id="legend">
         <div class="legend-title">Events per 100k school-age children</div>
@@ -72,6 +95,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
-    <script src="map.js?v=20260501h"></script>
+    <script src="map.js?v=20260501i"></script>
 </body>
 </html>
