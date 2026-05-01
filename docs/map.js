@@ -72,19 +72,7 @@ function displacementPopupHtml(e) {
         </div>`;
 }
 
-function popupHtml(r, maxBreakdown) {
-    const rows = Object.entries(r.breakdown)
-        .map(([name, count]) => {
-            const pct = (count / maxBreakdown) * 100;
-            return `
-                <div class="bar-row">
-                    <span class="name" title="${name}">${name}</span>
-                    <span class="bar-track"><span class="bar-fill" style="width:${pct}%"></span></span>
-                    <span class="count">${fmt(count)}</span>
-                </div>`;
-        })
-        .join("");
-
+function popupHtml(r) {
     const pop = r.school_age_pop;
     const schools = r.schools_osm;
     const rate = pop ? (r.events / pop) * 100_000 : null;
@@ -114,8 +102,6 @@ function popupHtml(r, maxBreakdown) {
                 </div>
             </div>
             ${popRow}
-            <div class="breakdown-title">By cause</div>
-            ${rows}
         </div>`;
 }
 
@@ -170,7 +156,7 @@ Promise.all([
     const maxEvents = Math.max(...events.regions.map((r) => r.events));
 
     events.regions.forEach((r) => {
-        const maxBreakdown = Math.max(...Object.values(r.breakdown));
+        if (!r.events) return;
         L.circleMarker([r.lat, r.lon], {
             radius: radiusFor(r.events, maxEvents),
             color: "#7f1d1d",
@@ -178,7 +164,7 @@ Promise.all([
             fillColor: "#dc2626",
             fillOpacity: 0.7,
         })
-            .bindPopup(popupHtml(r, maxBreakdown), { maxWidth: 320 })
+            .bindPopup(popupHtml(r), { maxWidth: 320 })
             .addTo(map);
     });
 

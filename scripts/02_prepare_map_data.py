@@ -33,6 +33,7 @@ from shapely.strtree import STRtree
 POP_XLSX = Path("data/raw/bfa_admpop_2023_5yr.xlsx")
 ACLED_PV = Path("data/raw/bfa_acled_monthly_political_violence.xlsx")
 ACLED_DM = Path("data/raw/bfa_acled_monthly_demonstrations.xlsx")
+ACLED_WEEKLY = Path("data/raw/Africa_aggregated_data_up_to_week_of-2026-04-11.xlsx")
 SCHOOLS_IN = Path("data/raw/bfa_osm_schools.json")
 IDMC_IN = Path("data/raw/bfa_idmc_events.csv")
 ADMIN1_IN = Path("data/raw/bfa_admin1.geojson")
@@ -78,6 +79,41 @@ def school_age_by_new_region(prov_to_region: dict) -> dict:
         if match:
             out[match[0]] += int(r.school_age)
     return dict(out)
+
+
+def strategic_developments_by_new_region(school_age: dict) -> dict:
+    """
+    Strategic developments aren't in the per-province ACLED files. Read
+    them from the weekly Africa file (which carries all 6 EVENT_TYPEs at
+    OLD admin1 only) and allocate to NEW regions by school-age population
+    share within each parent old region.
+
+    Returns {adm1_pcode_new: estimated_strategic_developments_count}.
+    """
+    if not ACLED_WEEKLY.exists():
+        return {}
+    df = pd.read_excel(ACLED_WEEKLY)
+    df = df[(df["COUNTRY"] == "Burkina Faso")
+            & (df["EVENT_TYPE"] == "Strategic developments")].copy()
+    df["WEEK"] = pd.to_datetime(df["WEEK"])
+    cutoff = df["WEEK"].max() - pd.DateOffset(months=WINDOW_MONTHS)
+    df = df[df["WEEK"] >= cutoff]
+    sd_by_old = df.groupby(df["ADMIN1"].str.lower())["EVENTS"].sum().to_dict()
+    print(f"  Strategic developments total (last {WINDOW_MONTHS}m): {df['EVENTS'].sum()}")
+
+    # Build pop-share map: each new region's share within its parent old region
+    g = json.load(open(ADMIN1_IN))
+    new_to_old = {f["properties"]["adm1_pcode"]: f["properties"]["adm1_name_old"].lower()
+                  for f in g["features"]}
+    pop_by_old: dict = defaultdict(int)
+    for new_pcode, old_name in new_to_old.items():
+        pop_by_old[old_name] += school_age.get(new_pcode, 0)
+
+    out: dict = {}
+    for new_pcode, old_name in new_to_old.items():
+        share = (school_age.get(new_pcode, 0) / pop_by_old[old_name]) if pop_by_old[old_name] else 0
+        out[new_pcode] = round(sd_by_old.get(old_name, 0) * share)
+    return out
 
 
 def acled_per_new_region(prov_to_region: dict) -> dict:
@@ -224,6 +260,15 @@ def main() -> None:
 
     print("Aggregating ACLED political violence + demonstrations per new region ...")
     acled = acled_per_new_region(prov_to_region)
+
+    print("Allocating Strategic developments by school-age population share ...")
+    sd_by_new = strategic_developments_by_new_region(school_age)
+    for pcode, sd in sd_by_new.items():
+        bucket = acled["regions"].setdefault(
+            pcode, {"events": 0, "fatalities": 0, "breakdown": {}}
+        )
+        bucket["events"] += sd
+        bucket["breakdown"]["Strategic developments"] = sd
 
     print("Extracting IDMC displacement events ...")
     disp = displacement_events()
