@@ -1,14 +1,17 @@
-// Burkina Faso conflict-activity map.
-// Loads two small JSON files prepared by scripts/02_prepare_map_data.py
-// and renders region polygons (17 new regions) plus circle markers per
-// region centroid sized by total events in the last 12 months.
+// Burkina Faso — conflict pressure on school-age population.
+// Loads four small JSON files prepared by scripts/02_prepare_map_data.py
+// and renders:
+//   - 17 region polygons coloured by events per 100,000 children (choropleth)
+//   - red circle markers per region sized by absolute event count
+//   - small blue dots for OSM schools
+//   - amber triangles for recent IDMC displacement events
+// Plus a "highest pressure" panel listing the top 3 regions and a
+// header strip showing total events / displaced / school-age children.
 
 const BF_CENTER = [12.4, -1.5];
 const BF_ZOOM = 7;
 
 const map = L.map("map", { zoomControl: true }).setView(BF_CENTER, BF_ZOOM);
-
-// A canvas renderer keeps the 5,000+ school dots fast.
 const schoolsCanvas = L.canvas({ padding: 0.3 });
 
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
@@ -23,17 +26,17 @@ function fmt(n) {
     return n.toLocaleString("en-US");
 }
 
+function fmtCompact(n) {
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(2).replace(/\.?0+$/, "") + "M";
+    if (n >= 10_000) return (n / 1000).toFixed(0) + "k";
+    return fmt(n);
+}
+
 function fmtDate(iso) {
     const d = new Date(iso);
     return d.toLocaleDateString("en-GB", {
         day: "numeric", month: "short", year: "numeric",
     });
-}
-
-// Square-root scaling so a region with 4x events has 2x radius — visually fair.
-function radiusFor(events, maxEvents) {
-    const minR = 6, maxR = 36;
-    return minR + (maxR - minR) * Math.sqrt(events / maxEvents);
 }
 
 function fmtFullDate(iso) {
@@ -43,10 +46,23 @@ function fmtFullDate(iso) {
     });
 }
 
-// Triangle marker for displacement events. Size scales with `figure`
-// (number of people displaced) using a square-root mapping for fairness.
+function radiusFor(events, maxEvents) {
+    const minR = 6, maxR = 32;
+    return minR + (maxR - minR) * Math.sqrt(events / maxEvents);
+}
+
+// Sequential red ramp keyed to events per 100,000 school-age children.
+function colorForRate(rate) {
+    if (rate >= 100) return "#7f1d1d";
+    if (rate >= 50) return "#dc2626";
+    if (rate >= 30) return "#f87171";
+    if (rate >= 10) return "#fecaca";
+    if (rate > 0) return "#fef2f2";
+    return "#f3f4f6";
+}
+
 function displacementIcon(figure, maxFigure) {
-    const minH = 12, maxH = 26;
+    const minH = 11, maxH = 24;
     const h = minH + (maxH - minH) * Math.sqrt(figure / maxFigure);
     const w = h * 1.1;
     const halfW = w / 2;
@@ -91,18 +107,47 @@ function popupHtml(r) {
         <div class="popup">
             <h3>${r.region}</h3>
             <div class="period">${fmtDate(r.period_start)} — ${fmtDate(r.period_end)}</div>
-            <div class="stats">
-                <div class="stat">
-                    <div class="num">${fmt(r.events)}</div>
-                    <div class="label">events</div>
-                </div>
-                <div class="stat">
-                    <div class="num">${fmt(r.fatalities)}</div>
-                    <div class="label">fatalities</div>
-                </div>
+            <div class="hero-stat">
+                <span class="num">${fmt(r.events)}</span>
+                <span class="label">conflict events (last 12 months)</span>
             </div>
             ${popRow}
         </div>`;
+}
+
+function renderHotspots(events) {
+    const ranked = events.regions
+        .filter((r) => r.school_age_pop)
+        .map((r) => ({
+            ...r,
+            rate: (r.events / r.school_age_pop) * 100_000,
+        }))
+        .sort((a, b) => b.rate - a.rate)
+        .slice(0, 3);
+
+    const html = ranked
+        .map(
+            (r, i) => `
+            <div class="hotspot-row">
+                <span class="rank">${i + 1}</span>
+                <span class="name">${r.region}</span>
+                <span class="rate">${r.rate.toFixed(1)}</span>
+            </div>`,
+        )
+        .join("");
+    document.getElementById("hotspots-body").innerHTML = html;
+}
+
+function renderHeaderStats(events, displacement) {
+    const totalEvents = events.regions.reduce((s, r) => s + r.events, 0);
+    const totalChildren = events.regions.reduce(
+        (s, r) => s + (r.school_age_pop || 0), 0,
+    );
+    document.getElementById("stat-events").textContent = fmt(totalEvents);
+    document.getElementById("stat-displaced").textContent = fmt(displacement.total_displaced);
+    document.getElementById("stat-children").textContent = fmtCompact(totalChildren);
+    document.getElementById("header-period").textContent =
+        `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)} · 12-month window`;
 }
 
 Promise.all([
@@ -111,65 +156,66 @@ Promise.all([
     fetch("data/schools.json").then((r) => r.json()),
     fetch("data/displacement.json").then((r) => r.json()),
 ]).then(([regions, events, schools, displacement]) => {
-    const totalChildren = events.regions.reduce(
-        (sum, r) => sum + (r.school_age_pop || 0), 0,
-    );
-    document.getElementById("period-line").textContent =
-        `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)} · ` +
-        `${fmt(totalChildren)} school-age children (5-14) · ` +
-        `${fmt(displacement.total_displaced)} newly displaced ` +
-        `(${displacement.events.length} reported events, ` +
-        `${fmtDate(displacement.period_start)} → ${fmtDate(displacement.period_end)})`;
+    renderHeaderStats(events, displacement);
+    renderHotspots(events);
+
+    // Lookup pcode -> region record for choropleth coloring + popup binding.
+    const byPcode = Object.fromEntries(events.regions.map((r) => [r.pcode, r]));
 
     L.geoJSON(regions, {
-        style: {
-            color: "#475569",
-            weight: 1.1,
-            fillColor: "#f1f5f9",
-            fillOpacity: 0.55,
-            opacity: 0.85,
+        style: (feature) => {
+            const r = byPcode[feature.properties.pcode];
+            const rate = r && r.school_age_pop
+                ? (r.events / r.school_age_pop) * 100_000
+                : 0;
+            return {
+                color: "#64748b",
+                weight: 0.8,
+                fillColor: colorForRate(rate),
+                fillOpacity: 0.78,
+                opacity: 0.9,
+            };
         },
         onEachFeature: (feature, layer) => {
+            const r = byPcode[feature.properties.pcode];
             layer.bindTooltip(feature.properties.name, {
                 sticky: true,
                 className: "region-label",
             });
+            if (r) layer.bindPopup(popupHtml(r), { maxWidth: 320 });
             layer.on({
-                mouseover: (e) => e.target.setStyle({ weight: 2, color: "#1e293b" }),
-                mouseout: (e) => e.target.setStyle({ weight: 1.1, color: "#475569" }),
+                mouseover: (e) =>
+                    e.target.setStyle({ weight: 1.8, color: "#0f172a" }),
+                mouseout: (e) =>
+                    e.target.setStyle({ weight: 0.8, color: "#64748b" }),
             });
         },
     }).addTo(map);
 
-    // Schools layer — small subtle blue dots, drawn on canvas under the
-    // conflict markers so the red circles remain the visual headline.
     schools.forEach(([lat, lon]) => {
         L.circleMarker([lat, lon], {
             renderer: schoolsCanvas,
             radius: 2,
             stroke: false,
             fillColor: "#1d4ed8",
-            fillOpacity: 0.45,
+            fillOpacity: 0.55,
         }).addTo(map);
     });
 
     const maxEvents = Math.max(...events.regions.map((r) => r.events));
-
     events.regions.forEach((r) => {
         if (!r.events) return;
         L.circleMarker([r.lat, r.lon], {
             radius: radiusFor(r.events, maxEvents),
-            color: "#7f1d1d",
-            weight: 1,
+            color: "#450a0a",
+            weight: 1.5,
             fillColor: "#dc2626",
-            fillOpacity: 0.7,
+            fillOpacity: 0.85,
         })
             .bindPopup(popupHtml(r), { maxWidth: 320 })
             .addTo(map);
     });
 
-    // Displacement events — sit on top of the conflict circles, smaller
-    // amber triangles tied to specific lat/lon and dates.
     const maxFigure = Math.max(...displacement.events.map((e) => e.figure));
     displacement.events.forEach((e) => {
         L.marker([e.lat, e.lon], {

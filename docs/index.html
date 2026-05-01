@@ -13,22 +13,60 @@
 </head>
 <body>
     <header>
-        <h1>Burkina Faso — Conflict Pressure on School-Age Population</h1>
-        <p id="period-line">Loading…</p>
+        <div class="header-left">
+            <h1>Burkina Faso — Conflict Pressure on School-Age Population</h1>
+            <div id="header-period"></div>
+        </div>
+        <div class="header-stats">
+            <div class="stat-card">
+                <div class="stat-num" id="stat-events">—</div>
+                <div class="stat-label">conflict events</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-displaced">—</div>
+                <div class="stat-label">newly displaced</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-children">—</div>
+                <div class="stat-label">school-age children</div>
+            </div>
+        </div>
     </header>
 
     <div id="map"></div>
 
+    <div id="hotspots">
+        <div class="hotspots-title">Highest pressure</div>
+        <div class="hotspots-sub">events per 100k children</div>
+        <div id="hotspots-body"></div>
+    </div>
+
     <div id="legend">
+        <div class="legend-title">Choropleth · events per 100k children</div>
+        <div class="legend-scale">
+            <span class="scale-step" style="background:#fef2f2"></span>
+            <span class="scale-step" style="background:#fecaca"></span>
+            <span class="scale-step" style="background:#f87171"></span>
+            <span class="scale-step" style="background:#dc2626"></span>
+            <span class="scale-step" style="background:#7f1d1d"></span>
+        </div>
+        <div class="legend-scale-labels">
+            <span>0</span><span>10</span><span>30</span><span>50</span><span>100+</span>
+        </div>
+
+        <div class="legend-divider"></div>
+
         <div class="legend-row">
             <span class="dot-stack">
                 <span class="dot small"></span><span class="dot mid"></span><span class="dot large"></span>
             </span>
-            Conflict events (last 12 months)
+            Conflict events (size = total)
         </div>
         <div class="legend-row"><span class="dot displacement"></span>Recent displacement (size = people)</div>
         <div class="legend-row"><span class="dot school"></span>School (OpenStreetMap)</div>
+
         <div class="legend-divider"></div>
+
         <div class="legend-note">
             <span class="legend-note-title">Events counted (ACLED categories):</span>
             Battles · Explosions / Remote violence · Violence against civilians · Protests · Riots · Strategic developments
