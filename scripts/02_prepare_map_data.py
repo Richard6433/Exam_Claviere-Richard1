@@ -2,17 +2,18 @@
 Prepare browser-ready data for the Leaflet map (17-region version).
 
 Reads:
-    data/raw/bfa_admin1.geojson                                    (17 new regions)
-    data/raw/bfa_admin2.geojson                                    (47 new provinces, with adm2_pcode_old + adm1_pcode_new)
-    data/raw/bfa_admpop_2023_5yr.xlsx (sheet bfa_admpop_adm2_2023) (UNFPA 2023 admin2 5-yr age bands)
-    data/raw/bfa_acled_monthly_political_violence.xlsx             (ACLED per-province monthly)
-    data/raw/bfa_acled_monthly_demonstrations.xlsx                 (ACLED per-province monthly)
-    data/raw/bfa_osm_schools.json                                  (OSM schools via Overpass)
-    data/raw/bfa_idmc_events.csv                                   (IDMC displacement events)
+    data/raw/cod/bfa_admin1.geojson                                       (17 new regions)
+    data/raw/cod/bfa_admin2.geojson                                       (47 new provinces)
+    data/raw/unfpa/bfa_admpop_2023_5yr.xlsx (sheet bfa_admpop_adm2_2023)  (UNFPA 2023 admin2 5-yr age bands)
+    data/raw/acled/bfa_acled_monthly_political_violence.xlsx              (ACLED per-province monthly)
+    data/raw/acled/bfa_acled_monthly_demonstrations.xlsx                  (ACLED per-province monthly)
+    data/raw/acled/Africa_aggregated_*.xlsx                               (ACLED weekly, for Strategic developments)
+    data/raw/osm/bfa_osm_schools.json                                     (OSM schools via Overpass)
+    data/raw/idmc/bfa_idmc_events.csv                                     (IDMC displacement events)
 
 Writes:
     docs/data/regions.geojson           (simplified 17-region polygons)
-    docs/data/events_by_region.json     (one record per NEW region)
+    docs/data/events-by-region.json     (one record per NEW region)
     docs/data/schools.json              (compact [lat, lon] pairs)
     docs/data/displacement.json         (recent IDMC events)
 
@@ -33,16 +34,16 @@ from shapely.strtree import STRtree
 
 ATTRIBUTION_RE = re.compile(r"According to ([^,.;]+)", re.IGNORECASE)
 
-POP_XLSX = Path("data/raw/bfa_admpop_2023_5yr.xlsx")
-ACLED_PV = Path("data/raw/bfa_acled_monthly_political_violence.xlsx")
-ACLED_DM = Path("data/raw/bfa_acled_monthly_demonstrations.xlsx")
-ACLED_WEEKLY = Path("data/raw/Africa_aggregated_data_up_to_week_of-2026-04-11.xlsx")
-SCHOOLS_IN = Path("data/raw/bfa_osm_schools.json")
-IDMC_IN = Path("data/raw/bfa_idmc_events.csv")
-ADMIN1_IN = Path("data/raw/bfa_admin1.geojson")
-ADMIN2_IN = Path("data/raw/bfa_admin2.geojson")
+ACLED_PV = Path("data/raw/acled/bfa_acled_monthly_political_violence.xlsx")
+ACLED_DM = Path("data/raw/acled/bfa_acled_monthly_demonstrations.xlsx")
+ACLED_WEEKLY = Path("data/raw/acled/Africa_aggregated_data_up_to_week_of-2026-04-11.xlsx")
+POP_XLSX = Path("data/raw/unfpa/bfa_admpop_2023_5yr.xlsx")
+SCHOOLS_IN = Path("data/raw/osm/bfa_osm_schools.json")
+IDMC_IN = Path("data/raw/idmc/bfa_idmc_events.csv")
+ADMIN1_IN = Path("data/raw/cod/bfa_admin1.geojson")
+ADMIN2_IN = Path("data/raw/cod/bfa_admin2.geojson")
 
-EVENTS_OUT = Path("docs/data/events_by_region.json")
+EVENTS_OUT = Path("docs/data/events-by-region.json")
 REGIONS_OUT = Path("docs/data/regions.geojson")
 SCHOOLS_OUT = Path("docs/data/schools.json")
 DISPLACEMENT_OUT = Path("docs/data/displacement.json")

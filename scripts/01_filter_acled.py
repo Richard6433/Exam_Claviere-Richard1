@@ -7,22 +7,21 @@ Supports both:
     (column 'COUNTRY', uppercase)
 
 Usage:
-    1. Save the ACLED file under data/raw/, e.g.:
-           data/raw/acled_export.csv                                      (CSV)
-           data/raw/Africa_aggregated_data_up_to_week_of-2026-04-11.xlsx  (XLSX)
-    2. Set INPUT_PATH below to point at it.
+    1. Save the ACLED file under data/raw/acled/, e.g.:
+           data/raw/acled/Africa_aggregated_data_up_to_week_of-2026-04-11.xlsx
+    2. Set INPUT_PATH below if your filename differs.
     3. From the project root, run:
            python scripts/01_filter_acled.py
     4. Output is written to:
-           data/processed/acled_burkina_faso.csv
+           data/processed/bf-acled-events.csv
 """
 
 from pathlib import Path
 
 import pandas as pd
 
-INPUT_PATH = Path("data/raw/Africa_aggregated_data_up_to_week_of-2026-04-11.xlsx")
-OUTPUT_PATH = Path("data/processed/acled_burkina_faso.csv")
+INPUT_PATH = Path("data/raw/acled/Africa_aggregated_data_up_to_week_of-2026-04-11.xlsx")
+OUTPUT_PATH = Path("data/processed/bf-acled-events.csv")
 TARGET_COUNTRY = "Burkina Faso"
 
 

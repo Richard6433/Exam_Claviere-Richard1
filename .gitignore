@@ -8,7 +8,17 @@ venv/
 .idea/
 .ipynb_checkpoints/
 
-# Raw downloads are transient and can be re-fetched from the source.
-# We commit processed outputs only.
-data/raw/*
-!data/raw/.gitkeep
+# Raw third-party files are transient and can be re-fetched from the source.
+# Folder structure (subdirectories + .gitkeep + READMEs) stays tracked so
+# anyone cloning the repo sees where each source belongs.
+data/raw/**/*.xlsx
+data/raw/**/*.xls
+data/raw/**/*.csv
+data/raw/**/*.json
+data/raw/**/*.geojson
+data/raw/**/*.zip
+data/raw/**/*.tif
+data/raw/**/*.shp*
+data/raw/**/*.dbf
+data/raw/**/*.shx
+data/raw/**/*.prj
