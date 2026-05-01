@@ -155,7 +155,7 @@ function safe(label, fn) {
 
 Promise.all([
     fetch("data/regions.geojson").then((r) => r.json()),
-    fetch("data/events_by_region.json").then((r) => r.json()),
+    fetch("data/events-by-region.json").then((r) => r.json()),
     fetch("data/schools.json").then((r) => r.json()),
     fetch("data/displacement.json").then((r) => r.json()),
 ])

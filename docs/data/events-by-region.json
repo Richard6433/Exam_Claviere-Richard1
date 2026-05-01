@@ -1,0 +1,312 @@
+{
+  "period_start": "2025-04-01",
+  "period_end": "2026-04-30",
+  "regions": [
+    {
+      "pcode": "BF49",
+      "region": "Koulse",
+      "lat": 13.2711,
+      "lon": -0.9736,
+      "events": 265,
+      "fatalities": 381,
+      "school_age_pop": 614103,
+      "schools_osm": 379,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 232,
+        "Demonstrations": 13,
+        "Strategic developments": 20
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF54",
+      "region": "Yaadga",
+      "lat": 13.46,
+      "lon": -2.2831,
+      "events": 244,
+      "fatalities": 658,
+      "school_age_pop": 555813,
+      "schools_osm": 764,
+      "displaced_recent": 6849,
+      "breakdown": {
+        "Political violence": 206,
+        "Demonstrations": 12,
+        "Strategic developments": 26
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF64",
+      "region": "Liptako",
+      "lat": 14.0996,
+      "lon": 0.008,
+      "events": 235,
+      "fatalities": 498,
+      "school_age_pop": 228293,
+      "schools_osm": 70,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 143,
+        "Demonstrations": 3,
+        "Strategic developments": 89
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF61",
+      "region": "Sourou",
+      "lat": 12.9879,
+      "lon": -3.3922,
+      "events": 228,
+      "fatalities": 758,
+      "school_age_pop": 268286,
+      "schools_osm": 215,
+      "displaced_recent": 23171,
+      "breakdown": {
+        "Political violence": 192,
+        "Demonstrations": 12,
+        "Strategic developments": 24
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF63",
+      "region": "Goulmou",
+      "lat": 11.8628,
+      "lon": 0.7346,
+      "events": 205,
+      "fatalities": 594,
+      "school_age_pop": 188410,
+      "schools_osm": 48,
+      "displaced_recent": 131,
+      "breakdown": {
+        "Political violence": 184,
+        "Demonstrations": 4,
+        "Strategic developments": 17
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF48",
+      "region": "Nakambe",
+      "lat": 11.6076,
+      "lon": -0.1861,
+      "events": 166,
+      "fatalities": 523,
+      "school_age_pop": 518698,
+      "schools_osm": 244,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 141,
+        "Demonstrations": 15,
+        "Strategic developments": 10
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF59",
+      "region": "Soum",
+      "lat": 14.2358,
+      "lon": -1.2902,
+      "events": 150,
+      "fatalities": 716,
+      "school_age_pop": 111929,
+      "schools_osm": 90,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 103,
+        "Demonstrations": 4,
+        "Strategic developments": 43
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF58",
+      "region": "Sirba",
+      "lat": 12.8719,
+      "lon": 0.3038,
+      "events": 109,
+      "fatalities": 219,
+      "school_age_pop": 265319,
+      "schools_osm": 56,
+      "displaced_recent": 4391,
+      "breakdown": {
+        "Political violence": 80,
+        "Demonstrations": 5,
+        "Strategic developments": 24
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF62",
+      "region": "Bankui",
+      "lat": 12.0903,
+      "lon": -3.5843,
+      "events": 93,
+      "fatalities": 154,
+      "school_age_pop": 323257,
+      "schools_osm": 149,
+      "displaced_recent": 8460,
+      "breakdown": {
+        "Political violence": 49,
+        "Demonstrations": 16,
+        "Strategic developments": 28
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF60",
+      "region": "Tapoa",
+      "lat": 12.0897,
+      "lon": 1.7346,
+      "events": 77,
+      "fatalities": 236,
+      "school_age_pop": 208196,
+      "schools_osm": 309,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 57,
+        "Demonstrations": 1,
+        "Strategic developments": 19
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF13",
+      "region": "Kadiogo",
+      "lat": 12.3259,
+      "lon": -1.5,
+      "events": 50,
+      "fatalities": 0,
+      "school_age_pop": 801497,
+      "schools_osm": 1173,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 1,
+        "Demonstrations": 16,
+        "Strategic developments": 33
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF47",
+      "region": "Tannounyan",
+      "lat": 10.3545,
+      "lon": -4.5703,
+      "events": 40,
+      "fatalities": 83,
+      "school_age_pop": 264176,
+      "schools_osm": 186,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 30,
+        "Demonstrations": 9,
+        "Strategic developments": 1
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF53",
+      "region": "Guiriko",
+      "lat": 11.3652,
+      "lon": -4.3312,
+      "events": 30,
+      "fatalities": 42,
+      "school_age_pop": 682161,
+      "schools_osm": 329,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 15,
+        "Demonstrations": 12,
+        "Strategic developments": 3
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF57",
+      "region": "Djoro",
+      "lat": 10.4752,
+      "lon": -3.2372,
+      "events": 26,
+      "fatalities": 19,
+      "school_age_pop": 266117,
+      "schools_osm": 85,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 15,
+        "Demonstrations": 10,
+        "Strategic developments": 1
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF50",
+      "region": "Nando",
+      "lat": 11.7962,
+      "lon": -2.2215,
+      "events": 13,
+      "fatalities": 2,
+      "school_age_pop": 519788,
+      "schools_osm": 755,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 2,
+        "Demonstrations": 10,
+        "Strategic developments": 1
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF51",
+      "region": "Nazinon",
+      "lat": 11.584,
+      "lon": -1.219,
+      "events": 6,
+      "fatalities": 0,
+      "school_age_pop": 235320,
+      "schools_osm": 414,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 2,
+        "Demonstrations": 3,
+        "Strategic developments": 1
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    },
+    {
+      "pcode": "BF55",
+      "region": "Oubri",
+      "lat": 12.4448,
+      "lon": -1.1325,
+      "events": 6,
+      "fatalities": 0,
+      "school_age_pop": 305354,
+      "schools_osm": 325,
+      "displaced_recent": 0,
+      "breakdown": {
+        "Political violence": 0,
+        "Demonstrations": 6,
+        "Strategic developments": 0
+      },
+      "period_start": "2025-04-01",
+      "period_end": "2026-04-30"
+    }
+  ]
+}
