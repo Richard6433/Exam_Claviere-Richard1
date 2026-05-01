@@ -39,26 +39,6 @@ const ResetViewControl = L.Control.extend({
 });
 new ResetViewControl().addTo(map);
 
-// About panel toggle.
-function toggleAbout(show) {
-    const panel = document.getElementById("about-panel");
-    const backdrop = document.getElementById("about-backdrop");
-    if (!panel || !backdrop) return;
-    const open = show ?? panel.classList.contains("hidden");
-    panel.classList.toggle("hidden", !open);
-    backdrop.classList.toggle("hidden", !open);
-}
-document.addEventListener("DOMContentLoaded", () => {
-    const open = document.getElementById("about-toggle");
-    const close = document.getElementById("about-close");
-    const backdrop = document.getElementById("about-backdrop");
-    if (open) open.addEventListener("click", () => toggleAbout(true));
-    if (close) close.addEventListener("click", () => toggleAbout(false));
-    if (backdrop) backdrop.addEventListener("click", () => toggleAbout(false));
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") toggleAbout(false);
-    });
-});
 
 function fmt(n) {
     return n.toLocaleString("en-US");
@@ -249,10 +229,10 @@ Promise.all([
             schools.forEach(([lat, lon]) => {
                 L.circleMarker([lat, lon], {
                     renderer: schoolsCanvas,
-                    radius: 2.4,
+                    radius: 1.2,
                     stroke: false,
-                    fillColor: "#0c4a6e",
-                    fillOpacity: 0.8,
+                    fillColor: "#1f2937",
+                    fillOpacity: 0.35,
                 }).addTo(map);
             });
         });
