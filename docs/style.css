@@ -39,27 +39,15 @@ header p {
 
 #legend {
     position: absolute;
-    bottom: 24px;
-    right: 24px;
+    bottom: 16px;
+    right: 16px;
     background: #ffffff;
-    padding: 12px 14px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    font-size: 11px;
     z-index: 500;
-    min-width: 180px;
-}
-
-.legend-title {
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #1f2937;
-}
-
-.legend-title.secondary {
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px solid #e5e7eb;
+    max-width: 240px;
 }
 
 .legend-row {
@@ -67,7 +55,14 @@ header p {
     align-items: center;
     gap: 8px;
     color: #4b5563;
-    margin: 4px 0;
+    margin: 5px 0;
+    line-height: 1.3;
+}
+
+.dot-stack {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
 }
 
 .dot {
@@ -77,9 +72,9 @@ header p {
     opacity: 0.75;
     flex-shrink: 0;
 }
-.dot.small { width: 8px;  height: 8px;  }
-.dot.mid   { width: 16px; height: 16px; }
-.dot.large { width: 28px; height: 28px; }
+.dot.small { width: 5px;  height: 5px;  }
+.dot.mid   { width: 9px;  height: 9px;  }
+.dot.large { width: 14px; height: 14px; }
 .dot.school {
     width: 4px;
     height: 4px;
@@ -162,12 +157,32 @@ header p {
 }
 
 .legend-source {
-    margin-top: 10px;
-    padding-top: 8px;
+    margin-top: 8px;
+    padding-top: 6px;
     border-top: 1px solid #e5e7eb;
     color: #9ca3af;
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+/* Remove the dotted black focus outline that browsers draw on
+ * Leaflet's interactive SVG paths and DOM markers when clicked. */
+.leaflet-interactive:focus,
+.leaflet-marker-icon:focus,
+path.leaflet-interactive {
+    outline: none !important;
+}
+
+/* Hovering tooltip on regions — keep it subtle. */
+.region-label {
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 7px;
     font-size: 11px;
-    line-height: 1.4;
+    font-weight: 500;
+    color: #1f2937;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
 
 .popup {

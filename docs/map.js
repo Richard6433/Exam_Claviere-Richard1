@@ -137,15 +137,20 @@ Promise.all([
 
     L.geoJSON(regions, {
         style: {
-            color: "#9ca3af",
-            weight: 1,
-            fillColor: "#e5e7eb",
-            fillOpacity: 0.35,
+            color: "#475569",
+            weight: 1.1,
+            fillColor: "#f1f5f9",
+            fillOpacity: 0.55,
+            opacity: 0.85,
         },
         onEachFeature: (feature, layer) => {
             layer.bindTooltip(feature.properties.name, {
                 sticky: true,
                 className: "region-label",
+            });
+            layer.on({
+                mouseover: (e) => e.target.setStyle({ weight: 2, color: "#1e293b" }),
+                mouseout: (e) => e.target.setStyle({ weight: 1.1, color: "#475569" }),
             });
         },
     }).addTo(map);
