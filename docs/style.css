@@ -186,13 +186,14 @@ header h1 {
     flex-shrink: 0;
 }
 
-.legend-icon.legend-icon-text {
-    font-size: 9px;
-    font-weight: 700;
-    color: #1e293b;
-    background: #f1f5f9;
-    border-radius: 3px;
-    line-height: 1;
+.dot.school {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #1e293b;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 0 0.5px rgba(15, 23, 42, 0.25);
+    box-sizing: border-box;
 }
 
 .dot.displacement {
@@ -261,32 +262,19 @@ path.leaflet-interactive {
     box-shadow: none !important;
     padding: 0 !important;
     color: #0f172a;
-    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-shadow:
+        0 0 3px #ffffff,
+        0 0 3px #ffffff,
+        0 0 3px #ffffff,
+        0 0 3px #ffffff;
     pointer-events: none;
-    line-height: 1.2;
 }
 
 .region-label::before {
     display: none !important;
-}
-
-.region-label-name {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    text-shadow:
-        0 0 3px #ffffff, 0 0 3px #ffffff,
-        0 0 3px #ffffff, 0 0 3px #ffffff;
-}
-
-.region-label-meta {
-    font-size: 9px;
-    font-weight: 500;
-    color: #1e293b;
-    margin-top: 1px;
-    text-shadow:
-        0 0 3px #ffffff, 0 0 3px #ffffff,
-        0 0 3px #ffffff, 0 0 3px #ffffff;
 }
 
 /* ----- Popups ----- */

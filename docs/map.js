@@ -1,14 +1,15 @@
 // Burkina Faso — conflict pressure on school-age population.
 // Three layers:
 //   - 17 region polygons coloured by events per 100,000 children (choropleth)
+//   - small dots for OSM schools (white stroke for crisp contrast)
 //   - amber triangles for recent IDMC displacement events
-//   - region labels also show the school count for that region
 // Header strip shows total events / displaced / school-age children.
 
 const BF_CENTER = [12.4, -1.5];
 const BF_ZOOM = 7;
 
 const map = L.map("map", { zoomControl: true }).setView(BF_CENTER, BF_ZOOM);
+const schoolsCanvas = L.canvas({ padding: 0.3 });
 
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution:
@@ -161,12 +162,14 @@ function safe(label, fn) {
 Promise.all([
     fetch("data/regions.geojson").then((r) => r.json()),
     fetch("data/events_by_region.json").then((r) => r.json()),
+    fetch("data/schools.json").then((r) => r.json()),
     fetch("data/displacement.json").then((r) => r.json()),
 ])
-    .then(([regions, events, displacement]) => {
+    .then(([regions, events, schools, displacement]) => {
         console.log("[map] data loaded:",
             regions.features.length, "regions /",
             events.regions.length, "events records /",
+            schools.length, "schools /",
             displacement.events.length, "displacement events");
 
         safe("header", () => renderHeaderStats(events, displacement));
@@ -193,11 +196,7 @@ Promise.all([
                 },
                 onEachFeature: (feature, layer) => {
                     const r = byPcode[feature.properties.pcode];
-                    const schools = r && r.schools_osm;
-                    const labelHtml =
-                        `<div class="region-label-name">${feature.properties.name}</div>` +
-                        (schools ? `<div class="region-label-meta">${fmt(schools)} schools</div>` : "");
-                    layer.bindTooltip(labelHtml, {
+                    layer.bindTooltip(feature.properties.name, {
                         permanent: true,
                         direction: "center",
                         className: "region-label",
@@ -224,6 +223,19 @@ Promise.all([
                     });
                 },
             }).addTo(map);
+        });
+
+        safe("schools", () => {
+            schools.forEach(([lat, lon]) => {
+                L.circleMarker([lat, lon], {
+                    renderer: schoolsCanvas,
+                    radius: 1.8,
+                    weight: 0.6,
+                    color: "#ffffff",
+                    fillColor: "#1e293b",
+                    fillOpacity: 0.85,
+                }).addTo(map);
+            });
         });
 
         safe("displacement", () => {
