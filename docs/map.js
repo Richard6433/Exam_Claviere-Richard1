@@ -149,10 +149,6 @@ function renderHeaderStats(events, displacement) {
     setText("stat-events", fmt(totalEvents));
     setText("stat-displaced", fmt(displacement.total_displaced));
     setText("stat-children", fmtCompact(totalChildren));
-    setText(
-        "header-period",
-        `from ${fmtDate(events.period_start)} to ${fmtDate(events.period_end)}`,
-    );
 }
 
 function safe(label, fn) {
