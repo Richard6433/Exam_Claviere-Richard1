@@ -115,6 +115,16 @@ function popupHtml(r) {
         </div>`;
 }
 
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+}
+
+function setHtml(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = value;
+}
+
 function renderHotspots(events) {
     const ranked = events.regions
         .filter((r) => r.school_age_pop)
@@ -135,7 +145,7 @@ function renderHotspots(events) {
             </div>`,
         )
         .join("");
-    document.getElementById("hotspots-body").innerHTML = html;
+    setHtml("hotspots-body", html);
 }
 
 function renderHeaderStats(events, displacement) {
@@ -143,11 +153,13 @@ function renderHeaderStats(events, displacement) {
     const totalChildren = events.regions.reduce(
         (s, r) => s + (r.school_age_pop || 0), 0,
     );
-    document.getElementById("stat-events").textContent = fmt(totalEvents);
-    document.getElementById("stat-displaced").textContent = fmt(displacement.total_displaced);
-    document.getElementById("stat-children").textContent = fmtCompact(totalChildren);
-    document.getElementById("header-period").textContent =
-        `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)} · 12-month window`;
+    setText("stat-events", fmt(totalEvents));
+    setText("stat-displaced", fmt(displacement.total_displaced));
+    setText("stat-children", fmtCompact(totalChildren));
+    setText(
+        "header-period",
+        `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)} · 12-month window`,
+    );
 }
 
 function safe(label, fn) {
