@@ -319,35 +319,27 @@ path.leaflet-interactive {
     letter-spacing: 0.04em;
 }
 
-.popup .children-row {
-    background: #fef2f2;
-    border-left: 3px solid #b10026;
-    padding: 8px 10px;
-    font-size: 12px;
+.popup-region .region-facts {
+    margin: 0;
+    padding: 0 0 0 18px;
+    list-style: disc;
     color: #1f2937;
-    line-height: 1.5;
-    border-radius: 0 4px 4px 0;
-    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.55;
 }
 
-.popup .children-row strong {
-    color: #7f1d1d;
-    font-weight: 600;
+.popup-region .region-facts li {
+    margin: 4px 0;
 }
 
-.popup .displaced-row {
-    background: #f1f5f9;
-    border-left: 3px solid #18181b;
-    padding: 8px 10px;
-    font-size: 12px;
-    color: #1f2937;
-    line-height: 1.5;
-    border-radius: 0 4px 4px 0;
+.popup-region .region-facts li::marker {
+    color: #94a3b8;
 }
 
-.popup .displaced-row strong {
-    color: #0f172a;
+.popup-region .region-facts strong {
+    color: #b91c1c;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
 }
 
 /* ----- Displacement marker + popup ----- */

@@ -108,21 +108,18 @@ function popupHtml(r) {
     const schools = r.schools_osm;
     const displaced = r.displaced_recent || 0;
     const rate = pop ? (r.events / pop) * 100000 : null;
-    const schoolsLine = schools
-        ? ` · <strong>${fmt(schools)}</strong> schools mapped (OSM)`
-        : "";
-    const childrenRow = pop
-        ? `<div class="children-row">
-               <strong>${fmt(pop)}</strong> school-age children (5-14)
-               · <strong>${rate.toFixed(1)}</strong> events per 100,000 children
-               ${schoolsLine}
-           </div>`
-        : "";
-    const displacedRow = displaced
-        ? `<div class="displaced-row">
-               <strong>${fmt(displaced)}</strong> people newly displaced
-           </div>`
-        : "";
+
+    const facts = [];
+    if (pop) {
+        facts.push(`<li><strong>${fmt(pop)}</strong> school-age children (5-14)</li>`);
+        facts.push(`<li><strong>${rate.toFixed(1)}</strong> events per 100,000 children</li>`);
+    }
+    if (schools) {
+        facts.push(`<li><strong>${fmt(schools)}</strong> schools mapped</li>`);
+    }
+    if (displaced) {
+        facts.push(`<li><strong>${fmt(displaced)}</strong> people newly displaced</li>`);
+    }
 
     return `
         <div class="popup popup-region">
@@ -131,8 +128,9 @@ function popupHtml(r) {
                 <span class="num">${fmt(r.events)}</span>
                 <span class="label">conflict events</span>
             </div>
-            ${childrenRow}
-            ${displacedRow}
+            <ul class="region-facts">
+                ${facts.join("")}
+            </ul>
         </div>`;
 }
 
