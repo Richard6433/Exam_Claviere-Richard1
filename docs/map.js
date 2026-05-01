@@ -111,14 +111,14 @@ function popupHtml(r) {
 
     const facts = [];
     if (pop) {
-        facts.push(`<li><strong>${fmt(pop)}</strong> school-age children (5-14)</li>`);
-        facts.push(`<li><strong>${rate.toFixed(1)}</strong> events per 100,000 children</li>`);
+        facts.push(`<li><strong>${fmt(pop)}</strong> school-age children in this region (5-14)</li>`);
+        facts.push(`<li><strong>${rate.toFixed(1)}</strong> conflict events per 100,000 children</li>`);
     }
     if (schools) {
-        facts.push(`<li><strong>${fmt(schools)}</strong> schools mapped</li>`);
+        facts.push(`<li><strong>${fmt(schools)}</strong> schools in this region</li>`);
     }
     if (displaced) {
-        facts.push(`<li><strong>${fmt(displaced)}</strong> people newly displaced</li>`);
+        facts.push(`<li><strong>${fmt(displaced)}</strong> people newly displaced from this region</li>`);
     }
 
     return `
