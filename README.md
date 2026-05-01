@@ -64,6 +64,6 @@ python -m http.server --directory docs 8000
 ## Where to look first
 
 - **For the headline finding**, open the live map.
-- **For the proposal's argument**, read [`STRATEGY.md`](STRATEGY.md).
+- **For the proposal's argument**, read the PDF proposal.
 - **For data quality questions**, see [`SOURCES.md`](SOURCES.md) and
   [`data/processed/dataset-manifest.csv`](data/processed/dataset-manifest.csv).
