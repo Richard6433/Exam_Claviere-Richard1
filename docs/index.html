@@ -9,7 +9,7 @@
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin="">
-    <link rel="stylesheet" href="style.css?v=20260501i">
+    <link rel="stylesheet" href="style.css?v=20260501j">
 </head>
 <body>
     <header>
@@ -46,14 +46,19 @@
         <h3 id="about-title">About this map</h3>
         <p>What you're looking at: <strong>conflict pressure on school-age children (5-14)</strong> across Burkina Faso's 17 regions.</p>
         <ul class="about-list">
-            <li><strong>Choropleth (yellow → red):</strong> events per 100,000 children — a population-normalised intensity that compares regions of different sizes fairly.</li>
-            <li><strong>Black triangles:</strong> recent displacement events (3 Nov 2025 → 15 Mar 2026), sized by people displaced.</li>
+            <li><strong>Choropleth (yellow → red):</strong> ACLED conflict events per 100,000 children — a population-normalised intensity that compares regions of different sizes fairly.</li>
+            <li><strong>Black triangles:</strong> specific recent displacement <em>incidents</em> from IDMC (3 Nov 2025 → 15 Mar 2026), sized by people displaced. These show what happened recently, not the total displaced population.</li>
+            <li><strong>Region popups</strong> show a more comprehensive figure: <em>IDPs originated from this region</em>, sourced from CONASUR/GCORR (Jan 2024 → Apr 2025) — the official Burkinabè IDP registry.</li>
             <li><strong>Dark blue dots:</strong> schools mapped in OpenStreetMap (partial coverage).</li>
             <li><strong>Permanent labels:</strong> the 17 regions of Burkina Faso (post-2025 reorganisation).</li>
         </ul>
+        <p class="about-note">
+            <strong>Why the reddest regions don't always have the most IDPs:</strong>
+            Soum has the highest conflict pressure per child but fewer recorded IDPs because long-term blockades trap residents — they're not counted as "displaced" because they can't or already did leave. Conflict pressure is the only signal that detects this.
+        </p>
         <p class="about-meta">
-            <strong>Period:</strong> 1 April 2025 → 30 April 2026<br>
-            <strong>Sources:</strong> ACLED · IDMC · UNFPA 2023 · OpenStreetMap · OCHA / IGB
+            <strong>Period (conflict choropleth):</strong> 1 April 2025 → 30 April 2026<br>
+            <strong>Sources:</strong> ACLED · IDMC · CONASUR/GCORR · UNFPA 2023 · OpenStreetMap · OCHA / IGB
         </p>
         <p class="about-tip"><em>Tip: click any region to zoom in. Use the ↺ button (top-left) to return to the country view.</em></p>
     </div>
@@ -95,6 +100,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
-    <script src="map.js?v=20260501i"></script>
+    <script src="map.js?v=20260501j"></script>
 </body>
 </html>

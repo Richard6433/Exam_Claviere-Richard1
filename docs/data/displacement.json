@@ -1,7 +1,7 @@
 {
   "period_start": "2025-11-03",
   "period_end": "2026-03-15",
-  "total_displaced": 52988,
+  "total_displaced": 43002,
   "events": [
     {
       "lat": 13.1239,
@@ -11,26 +11,6 @@
       "end_date": "2025-11-03",
       "figure": 9341,
       "location": "Djibasso, Kossi, Boucle du Mouhoun",
-      "attribution": "Action Sociale"
-    },
-    {
-      "lat": 13.1239,
-      "lon": -4.1588,
-      "date": "2025-11-03",
-      "start_date": "2025-10-29",
-      "end_date": "2025-11-03",
-      "figure": 9341,
-      "location": "Djibasso, Kossi, Boucle du Mouhoun",
-      "attribution": "Action Sociale"
-    },
-    {
-      "lat": 12.6291,
-      "lon": -0.078,
-      "date": "2025-12-02",
-      "start_date": "2025-11-03",
-      "end_date": "2025-12-02",
-      "figure": 1523,
-      "location": "Bilanga, Gnagna, East; Pi\u00e9la, Gnagna Province, Est",
       "attribution": "Action Sociale"
     },
     {
@@ -44,13 +24,13 @@
       "attribution": "Action Sociale"
     },
     {
-      "lat": 12.1442,
-      "lon": 0.1228,
-      "date": "2025-12-20",
-      "start_date": "2025-12-02",
-      "end_date": "2025-12-20",
-      "figure": 645,
-      "location": "Diapangou, Gourma, East; Tibga, Gourma, East",
+      "lat": 12.6291,
+      "lon": -0.078,
+      "date": "2025-12-02",
+      "start_date": "2025-11-03",
+      "end_date": "2025-12-02",
+      "figure": 1523,
+      "location": "Bilanga, Gnagna, East; Pi\u00e9la, Gnagna Province, Est",
       "attribution": "Action Sociale"
     },
     {

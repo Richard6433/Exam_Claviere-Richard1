@@ -123,10 +123,10 @@ function displacementPopupHtml(e) {
         </div>`;
 }
 
-function popupHtml(r) {
+function popupHtml(r, gcorrPeriod) {
     const pop = r.school_age_pop;
     const schools = r.schools_osm;
-    const displaced = r.displaced_recent || 0;
+    const idps = r.idps_origin_gcorr || 0;
     const rate = pop ? (r.events / pop) * 100000 : null;
     const schoolsLine = schools
         ? ` · <strong>${fmt(schools)}</strong> schools mapped (OSM)`
@@ -138,9 +138,10 @@ function popupHtml(r) {
                ${schoolsLine}
            </div>`
         : "";
-    const displacedRow = displaced
+    const idpsRow = idps
         ? `<div class="displaced-row">
-               <strong>${fmt(displaced)}</strong> people newly displaced
+               <strong>${fmt(idps)}</strong> IDPs originated from this region
+               <span class="row-window">${gcorrPeriod}</span>
            </div>`
         : "";
 
@@ -152,7 +153,7 @@ function popupHtml(r) {
                 <span class="label">conflict events</span>
             </div>
             ${childrenRow}
-            ${displacedRow}
+            ${idpsRow}
         </div>`;
 }
 
@@ -194,6 +195,10 @@ Promise.all([
 
         safe("header", () => renderHeaderStats(events, displacement));
 
+        const gcorrPeriod = events.gcorr_period_start && events.gcorr_period_end
+            ? `${fmtDate(events.gcorr_period_start)} → ${fmtDate(events.gcorr_period_end)}`
+            : "";
+
         const byPcode = Object.fromEntries(
             events.regions.map((r) => [r.pcode, r]),
         );
@@ -221,7 +226,7 @@ Promise.all([
                         direction: "center",
                         className: "region-label",
                     });
-                    if (r) layer.bindPopup(popupHtml(r), { maxWidth: 320 });
+                    if (r) layer.bindPopup(popupHtml(r, gcorrPeriod), { maxWidth: 320 });
                     layer.on({
                         mouseover: (e) =>
                             e.target.setStyle({
