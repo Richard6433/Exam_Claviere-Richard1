@@ -19,7 +19,6 @@ schools as dark dots. Click any region for the four-stat snapshot
 ```
 .
 ├── README.md                  ← you are here
-├── STRATEGY.md                ← the proposal's intellectual foundation
 ├── SOURCES.md                 ← every data source, with provenance
 ├── data/
 │   ├── raw/                   ← third-party inputs, organised by source
