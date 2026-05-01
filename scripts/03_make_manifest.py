@@ -78,7 +78,7 @@ ROWS = [
         "records_count_fn": lambda: len(pd.read_csv("data/raw/bfa_idmc_events.csv")),
         "granularity": "One row per displacement event with lat/lon, date, figure, narrative",
         "role_in_map": "Amber triangles (size = people displaced); date, location, figure, narrative in popup",
-        "quality_notes": "Sourced from named local agencies (Action Sociale via GCORR); only events that crossed IDMC's reporting threshold are included — under-counts smaller incidents",
+        "quality_notes": "Two duplicate rows in the raw file (same event_id) are deduped in prep. Sourced from named local agencies (Action Sociale via GCORR); only events that crossed IDMC's reporting threshold are included — under-counts smaller incidents",
     },
 ]
 

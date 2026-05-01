@@ -222,6 +222,10 @@ def displacement_events() -> dict:
             "displacement_end_date",
         ],
     )
+    before = len(df)
+    df = df.drop_duplicates(subset=["event_id"], keep="first")
+    if before != len(df):
+        print(f"  Dropped {before - len(df)} duplicate IDMC rows (same event_id)")
     df = df.sort_values("displacement_date")
     events = []
     for r in df.itertuples():
