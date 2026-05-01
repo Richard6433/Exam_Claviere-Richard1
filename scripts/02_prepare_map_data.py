@@ -26,6 +26,7 @@ from datetime import timedelta
 from pathlib import Path
 import json
 import re
+import unicodedata
 
 import pandas as pd
 from shapely.geometry import shape, mapping, Point
@@ -33,12 +34,22 @@ from shapely.strtree import STRtree
 
 ATTRIBUTION_RE = re.compile(r"According to ([^,.;]+)", re.IGNORECASE)
 
+
+def normalize(s) -> str:
+    """Lowercase + strip accents for fuzzy name matching."""
+    if not s or not isinstance(s, str):
+        return ""
+    s = unicodedata.normalize("NFKD", s)
+    s = "".join(c for c in s if not unicodedata.combining(c))
+    return s.lower().strip()
+
 POP_XLSX = Path("data/raw/bfa_admpop_2023_5yr.xlsx")
 ACLED_PV = Path("data/raw/bfa_acled_monthly_political_violence.xlsx")
 ACLED_DM = Path("data/raw/bfa_acled_monthly_demonstrations.xlsx")
 ACLED_WEEKLY = Path("data/raw/Africa_aggregated_data_up_to_week_of-2026-04-11.xlsx")
 SCHOOLS_IN = Path("data/raw/bfa_osm_schools.json")
 IDMC_IN = Path("data/raw/bfa_idmc_events.csv")
+GCORR_IN = Path("data/raw/bfa_pdi_gcorr_may2025.xlsx")
 ADMIN1_IN = Path("data/raw/bfa_admin1.geojson")
 ADMIN2_IN = Path("data/raw/bfa_admin2.geojson")
 
@@ -222,6 +233,10 @@ def displacement_events() -> dict:
             "displacement_end_date",
         ],
     )
+    before = len(df)
+    df = df.drop_duplicates(subset=["event_id"], keep="first")
+    if before != len(df):
+        print(f"  Dropped {before - len(df)} duplicate IDMC rows (same event_id)")
     df = df.sort_values("displacement_date")
     events = []
     for r in df.itertuples():
@@ -245,6 +260,53 @@ def displacement_events() -> dict:
         "total_displaced": int(df["figure"].sum()),
         "events": events,
     }
+
+
+def gcorr_idps_by_origin_region() -> dict:
+    """
+    Aggregate official CONASUR/GCORR IDP figures per NEW admin1.
+
+    The dataset records, per displacement incident, the place of origin
+    (Region_Province_Commune) and the number of people displaced. We
+    take the province name from the origin string, look up its NEW
+    admin1 via the COD admin2 file, and sum.
+
+    Returns ({pcode_new: people_displaced}, period_start, period_end).
+    """
+    df = pd.read_excel(GCORR_IN, sheet_name="Incident Data")
+    origin_col = next(c for c in df.columns if "origine" in c.lower())
+    df = df.rename(columns={"PDI Personne": "PDI_Personne", "Date Choc": "Date_Choc"})
+    df["province"] = df[origin_col].str.split("_").str[1].apply(normalize)
+    df["Date_Choc"] = pd.to_datetime(df["Date_Choc"])
+
+    # province name (normalized) -> NEW admin1 pcode, considering both
+    # current and pre-2025 province names from the COD admin2 file.
+    g = json.load(open(ADMIN2_IN))
+    prov_to_new_admin1: dict = {}
+    for feat in g["features"]:
+        p = feat["properties"]
+        new_pcode = p["adm1_pcode"]
+        for key in (p.get("adm2_name"), p.get("adm2_name_old"), p.get("adm2_ref_name")):
+            if key:
+                prov_to_new_admin1[normalize(key)] = new_pcode
+
+    out: dict = defaultdict(int)
+    unmatched = 0
+    for r in df.itertuples():
+        new_pcode = prov_to_new_admin1.get(r.province)
+        people = int(r.PDI_Personne or 0)
+        if new_pcode:
+            out[new_pcode] += people
+        else:
+            unmatched += people
+    if unmatched:
+        print(f"  GCORR: {unmatched} IDPs from provinces with no admin1 match")
+
+    return (
+        dict(out),
+        str(df["Date_Choc"].min().date()),
+        str(df["Date_Choc"].max().date()),
+    )
 
 
 def displaced_by_new_region(disp: dict, regions_gj: dict) -> dict:
@@ -308,9 +370,13 @@ def main() -> None:
         json.dump(disp, f, indent=2)
     print(f"  Wrote {DISPLACEMENT_OUT}  ({DISPLACEMENT_OUT.stat().st_size / 1024:.1f} KB)")
 
-    print("Aggregating displacement per new region (point-in-polygon) ...")
+    print("Aggregating displacement per new region (point-in-polygon, IDMC) ...")
     displaced_per_region = displaced_by_new_region(disp, regions)
-    print(f"  Regions with recorded displacement: {len(displaced_per_region)}")
+    print(f"  Regions with recorded IDMC events: {len(displaced_per_region)}")
+
+    print("Aggregating CONASUR/GCORR IDPs by origin -> new region ...")
+    gcorr_idps, gcorr_start, gcorr_end = gcorr_idps_by_origin_region()
+    print(f"  GCORR period: {gcorr_start} -> {gcorr_end}; total: {sum(gcorr_idps.values()):,}")
 
     print("Building per-region records ...")
     records = []
@@ -326,12 +392,15 @@ def main() -> None:
             "school_age_pop": school_age.get(pcode, 0),
             "schools_osm": schools.get(pcode, 0),
             "displaced_recent": displaced_per_region.get(pcode, 0),
+            "idps_origin_gcorr": gcorr_idps.get(pcode, 0),
             "breakdown": a["breakdown"],
             "period_start": acled["period_start"],
             "period_end": acled["period_end"],
         })
     records.sort(key=lambda r: r["events"], reverse=True)
     out = {
+        "gcorr_period_start": gcorr_start,
+        "gcorr_period_end": gcorr_end,
         "period_start": acled["period_start"],
         "period_end": acled["period_end"],
         "regions": records,

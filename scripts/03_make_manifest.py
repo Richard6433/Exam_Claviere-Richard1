@@ -77,8 +77,21 @@ ROWS = [
         "as_of": "2026-04-30 (events 2025-11-03 to 2026-03-15)",
         "records_count_fn": lambda: len(pd.read_csv("data/raw/bfa_idmc_events.csv")),
         "granularity": "One row per displacement event with lat/lon, date, figure, narrative",
-        "role_in_map": "Amber triangles (size = people displaced); date, location, figure, narrative in popup",
-        "quality_notes": "Sourced from named local agencies (Action Sociale via GCORR); only events that crossed IDMC's reporting threshold are included — under-counts smaller incidents",
+        "role_in_map": "Black triangles (size = people displaced); date range, location in popup",
+        "quality_notes": "Two duplicate rows in the raw file (same event_id) are deduped in prep. Only events crossing IDMC's reporting threshold are included — under-counts smaller and chronic-blockade incidents",
+    },
+    {
+        "id": 6,
+        "dataset": "Burkina Faso CONASUR/GCORR IDP register",
+        "publisher": "Conseil National de Secours d'Urgence et de Réhabilitation (CONASUR), via Groupe de Coordination Opérationnelle de la Réponse Rapide (GCORR), hosted by OCHA Burkina Faso",
+        "source_url": "https://data.humdata.org/dataset/situation-des-personnes-deplacees-internes",
+        "format": "XLSX",
+        "local_file": "data/raw/bfa_pdi_gcorr_may2025.xlsx",
+        "as_of": "2025-05-08 (incidents Jan 2024 - Apr 2025)",
+        "records_count_fn": lambda: len(pd.read_excel("data/raw/bfa_pdi_gcorr_may2025.xlsx", sheet_name="Incident Data")),
+        "granularity": "One row per displacement incident with origin Region/Province/Commune, destination Region/Commune, household + persons (M/F/Boys/Girls)",
+        "role_in_map": "Per-region 'IDPs originated from this region' figure shown in the region popup (more comprehensive than IDMC IDU)",
+        "quality_notes": "Authoritative Burkinabè source for IDP figures; covers Jan 2024 - Apr 2025. Province names normalised + accent-stripped + matched to current and pre-2025 names from the COD admin2 file (99.8% coverage)",
     },
 ]
 
