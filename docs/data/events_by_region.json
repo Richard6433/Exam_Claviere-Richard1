@@ -1,6 +1,4 @@
 {
-  "gcorr_period_start": "2024-01-03",
-  "gcorr_period_end": "2025-04-30",
   "period_start": "2025-04-01",
   "period_end": "2026-04-30",
   "regions": [
@@ -14,7 +12,6 @@
       "school_age_pop": 614103,
       "schools_osm": 379,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 39915,
       "breakdown": {
         "Political violence": 232,
         "Demonstrations": 13,
@@ -33,7 +30,6 @@
       "school_age_pop": 555813,
       "schools_osm": 764,
       "displaced_recent": 6849,
-      "idps_origin_gcorr": 24847,
       "breakdown": {
         "Political violence": 206,
         "Demonstrations": 12,
@@ -52,7 +48,6 @@
       "school_age_pop": 228293,
       "schools_osm": 70,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 61618,
       "breakdown": {
         "Political violence": 143,
         "Demonstrations": 3,
@@ -70,8 +65,7 @@
       "fatalities": 758,
       "school_age_pop": 268286,
       "schools_osm": 215,
-      "displaced_recent": 23171,
-      "idps_origin_gcorr": 123605,
+      "displaced_recent": 32512,
       "breakdown": {
         "Political violence": 192,
         "Demonstrations": 12,
@@ -89,8 +83,7 @@
       "fatalities": 594,
       "school_age_pop": 188410,
       "schools_osm": 48,
-      "displaced_recent": 131,
-      "idps_origin_gcorr": 24321,
+      "displaced_recent": 776,
       "breakdown": {
         "Political violence": 184,
         "Demonstrations": 4,
@@ -109,7 +102,6 @@
       "school_age_pop": 518698,
       "schools_osm": 244,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 30740,
       "breakdown": {
         "Political violence": 141,
         "Demonstrations": 15,
@@ -128,7 +120,6 @@
       "school_age_pop": 111929,
       "schools_osm": 90,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 8386,
       "breakdown": {
         "Political violence": 103,
         "Demonstrations": 4,
@@ -147,7 +138,6 @@
       "school_age_pop": 265319,
       "schools_osm": 56,
       "displaced_recent": 4391,
-      "idps_origin_gcorr": 127573,
       "breakdown": {
         "Political violence": 80,
         "Demonstrations": 5,
@@ -166,7 +156,6 @@
       "school_age_pop": 323257,
       "schools_osm": 149,
       "displaced_recent": 8460,
-      "idps_origin_gcorr": 19551,
       "breakdown": {
         "Political violence": 49,
         "Demonstrations": 16,
@@ -185,7 +174,6 @@
       "school_age_pop": 208196,
       "schools_osm": 309,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 8999,
       "breakdown": {
         "Political violence": 57,
         "Demonstrations": 1,
@@ -204,7 +192,6 @@
       "school_age_pop": 801497,
       "schools_osm": 1173,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 0,
       "breakdown": {
         "Political violence": 1,
         "Demonstrations": 16,
@@ -223,7 +210,6 @@
       "school_age_pop": 264176,
       "schools_osm": 186,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 0,
       "breakdown": {
         "Political violence": 30,
         "Demonstrations": 9,
@@ -242,7 +228,6 @@
       "school_age_pop": 682161,
       "schools_osm": 329,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 11303,
       "breakdown": {
         "Political violence": 15,
         "Demonstrations": 12,
@@ -261,7 +246,6 @@
       "school_age_pop": 266117,
       "schools_osm": 85,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 0,
       "breakdown": {
         "Political violence": 15,
         "Demonstrations": 10,
@@ -280,7 +264,6 @@
       "school_age_pop": 519788,
       "schools_osm": 755,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 27257,
       "breakdown": {
         "Political violence": 2,
         "Demonstrations": 10,
@@ -299,7 +282,6 @@
       "school_age_pop": 235320,
       "schools_osm": 414,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 0,
       "breakdown": {
         "Political violence": 2,
         "Demonstrations": 3,
@@ -318,7 +300,6 @@
       "school_age_pop": 305354,
       "schools_osm": 325,
       "displaced_recent": 0,
-      "idps_origin_gcorr": 0,
       "breakdown": {
         "Political violence": 0,
         "Demonstrations": 6,
