@@ -103,7 +103,7 @@ function displacementPopupHtml(e) {
         </div>`;
 }
 
-function popupHtml(r) {
+function popupHtml(r, nationalRate) {
     const pop = r.school_age_pop;
     const schools = r.schools_osm;
     const displaced = r.displaced_recent || 0;
@@ -113,6 +113,9 @@ function popupHtml(r) {
     if (pop) {
         facts.push(`<li><strong>${fmt(pop)}</strong> school-age children in this region (5-14)</li>`);
         facts.push(`<li><strong>${rate.toFixed(1)}</strong> conflict events per 100,000 children</li>`);
+        if (nationalRate > 0) {
+            facts.push(`<li><strong>${(rate / nationalRate).toFixed(1)}×</strong> the national average</li>`);
+        }
     }
     if (schools) {
         facts.push(`<li><strong>${fmt(schools)}</strong> schools in this region</li>`);
@@ -168,6 +171,14 @@ Promise.all([
 
         safe("header", () => renderHeaderStats(events, displacement));
 
+        const totalEvents = events.regions.reduce((s, r) => s + r.events, 0);
+        const totalChildren = events.regions.reduce(
+            (s, r) => s + (r.school_age_pop || 0), 0,
+        );
+        const nationalRate = totalChildren > 0
+            ? (totalEvents / totalChildren) * 100000
+            : 0;
+
         const byPcode = Object.fromEntries(
             events.regions.map((r) => [r.pcode, r]),
         );
@@ -195,7 +206,7 @@ Promise.all([
                         direction: "center",
                         className: "region-label",
                     });
-                    if (r) layer.bindPopup(popupHtml(r), { maxWidth: 320 });
+                    if (r) layer.bindPopup(popupHtml(r, nationalRate), { maxWidth: 320 });
                     layer.on({
                         mouseover: (e) =>
                             e.target.setStyle({
