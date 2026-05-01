@@ -151,7 +151,7 @@ function renderHeaderStats(events, displacement) {
     setText("stat-children", fmtCompact(totalChildren));
     setText(
         "header-period",
-        `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)}`,
+        `from ${fmtDate(events.period_start)} to ${fmtDate(events.period_end)}`,
     );
 }
 
