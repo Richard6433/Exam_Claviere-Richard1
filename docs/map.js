@@ -27,7 +27,7 @@ function fmt(n) {
 }
 
 function fmtCompact(n) {
-    if (n >= 1_000_000) return (n / 1_000_000).toFixed(2).replace(/\.?0+$/, "") + "M";
+    if (n >= 1000000) return (n / 1000000).toFixed(2).replace(/\.?0+$/, "") + "M";
     if (n >= 10_000) return (n / 1000).toFixed(0) + "k";
     return fmt(n);
 }
@@ -91,7 +91,7 @@ function displacementPopupHtml(e) {
 function popupHtml(r) {
     const pop = r.school_age_pop;
     const schools = r.schools_osm;
-    const rate = pop ? (r.events / pop) * 100_000 : null;
+    const rate = pop ? (r.events / pop) * 100000 : null;
     const schoolsLine = schools
         ? ` · <strong>${fmt(schools)}</strong> schools mapped (OSM)`
         : "";
@@ -120,7 +120,7 @@ function renderHotspots(events) {
         .filter((r) => r.school_age_pop)
         .map((r) => ({
             ...r,
-            rate: (r.events / r.school_age_pop) * 100_000,
+            rate: (r.events / r.school_age_pop) * 100000,
         }))
         .sort((a, b) => b.rate - a.rate)
         .slice(0, 3);
@@ -150,78 +150,106 @@ function renderHeaderStats(events, displacement) {
         `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)} · 12-month window`;
 }
 
+function safe(label, fn) {
+    try { fn(); } catch (e) { console.error(`[map] ${label} failed:`, e); }
+}
+
 Promise.all([
     fetch("data/regions.geojson").then((r) => r.json()),
     fetch("data/events_by_region.json").then((r) => r.json()),
     fetch("data/schools.json").then((r) => r.json()),
     fetch("data/displacement.json").then((r) => r.json()),
-]).then(([regions, events, schools, displacement]) => {
-    renderHeaderStats(events, displacement);
-    renderHotspots(events);
+])
+    .then(([regions, events, schools, displacement]) => {
+        console.log("[map] data loaded:",
+            regions.features.length, "regions /",
+            events.regions.length, "events records /",
+            schools.length, "schools /",
+            displacement.events.length, "displacement events");
 
-    // Lookup pcode -> region record for choropleth coloring + popup binding.
-    const byPcode = Object.fromEntries(events.regions.map((r) => [r.pcode, r]));
+        safe("header", () => renderHeaderStats(events, displacement));
+        safe("hotspots", () => renderHotspots(events));
 
-    L.geoJSON(regions, {
-        style: (feature) => {
-            const r = byPcode[feature.properties.pcode];
-            const rate = r && r.school_age_pop
-                ? (r.events / r.school_age_pop) * 100_000
-                : 0;
-            return {
-                color: "#64748b",
-                weight: 0.8,
-                fillColor: colorForRate(rate),
-                fillOpacity: 0.78,
-                opacity: 0.9,
-            };
-        },
-        onEachFeature: (feature, layer) => {
-            const r = byPcode[feature.properties.pcode];
-            layer.bindTooltip(feature.properties.name, {
-                sticky: true,
-                className: "region-label",
+        const byPcode = Object.fromEntries(
+            events.regions.map((r) => [r.pcode, r]),
+        );
+
+        safe("regions", () => {
+            L.geoJSON(regions, {
+                style: (feature) => {
+                    const r = byPcode[feature.properties.pcode];
+                    const rate =
+                        r && r.school_age_pop
+                            ? (r.events / r.school_age_pop) * 100000
+                            : 0;
+                    return {
+                        color: "#64748b",
+                        weight: 0.8,
+                        fillColor: colorForRate(rate),
+                        fillOpacity: 0.78,
+                        opacity: 0.9,
+                    };
+                },
+                onEachFeature: (feature, layer) => {
+                    const r = byPcode[feature.properties.pcode];
+                    layer.bindTooltip(feature.properties.name, {
+                        sticky: true,
+                        className: "region-label",
+                    });
+                    if (r) layer.bindPopup(popupHtml(r), { maxWidth: 320 });
+                    layer.on({
+                        mouseover: (e) =>
+                            e.target.setStyle({ weight: 1.8, color: "#0f172a" }),
+                        mouseout: (e) =>
+                            e.target.setStyle({ weight: 0.8, color: "#64748b" }),
+                    });
+                },
+            }).addTo(map);
+        });
+
+        safe("schools", () => {
+            schools.forEach(([lat, lon]) => {
+                L.circleMarker([lat, lon], {
+                    renderer: schoolsCanvas,
+                    radius: 2,
+                    stroke: false,
+                    fillColor: "#1d4ed8",
+                    fillOpacity: 0.55,
+                }).addTo(map);
             });
-            if (r) layer.bindPopup(popupHtml(r), { maxWidth: 320 });
-            layer.on({
-                mouseover: (e) =>
-                    e.target.setStyle({ weight: 1.8, color: "#0f172a" }),
-                mouseout: (e) =>
-                    e.target.setStyle({ weight: 0.8, color: "#64748b" }),
+        });
+
+        safe("conflict markers", () => {
+            const maxEvents = Math.max(
+                ...events.regions.map((r) => r.events),
+            );
+            events.regions.forEach((r) => {
+                if (!r.events) return;
+                L.circleMarker([r.lat, r.lon], {
+                    radius: radiusFor(r.events, maxEvents),
+                    color: "#450a0a",
+                    weight: 1.5,
+                    fillColor: "#dc2626",
+                    fillOpacity: 0.85,
+                })
+                    .bindPopup(popupHtml(r), { maxWidth: 320 })
+                    .addTo(map);
             });
-        },
-    }).addTo(map);
+        });
 
-    schools.forEach(([lat, lon]) => {
-        L.circleMarker([lat, lon], {
-            renderer: schoolsCanvas,
-            radius: 2,
-            stroke: false,
-            fillColor: "#1d4ed8",
-            fillOpacity: 0.55,
-        }).addTo(map);
+        safe("displacement", () => {
+            const maxFigure = Math.max(
+                ...displacement.events.map((e) => e.figure),
+            );
+            displacement.events.forEach((e) => {
+                L.marker([e.lat, e.lon], {
+                    icon: displacementIcon(e.figure, maxFigure),
+                })
+                    .bindPopup(displacementPopupHtml(e), { maxWidth: 320 })
+                    .addTo(map);
+            });
+        });
+    })
+    .catch((e) => {
+        console.error("[map] failed to load data:", e);
     });
-
-    const maxEvents = Math.max(...events.regions.map((r) => r.events));
-    events.regions.forEach((r) => {
-        if (!r.events) return;
-        L.circleMarker([r.lat, r.lon], {
-            radius: radiusFor(r.events, maxEvents),
-            color: "#450a0a",
-            weight: 1.5,
-            fillColor: "#dc2626",
-            fillOpacity: 0.85,
-        })
-            .bindPopup(popupHtml(r), { maxWidth: 320 })
-            .addTo(map);
-    });
-
-    const maxFigure = Math.max(...displacement.events.map((e) => e.figure));
-    displacement.events.forEach((e) => {
-        L.marker([e.lat, e.lon], {
-            icon: displacementIcon(e.figure, maxFigure),
-        })
-            .bindPopup(displacementPopupHtml(e), { maxWidth: 320 })
-            .addTo(map);
-    });
-});
