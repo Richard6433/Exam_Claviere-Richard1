@@ -1,15 +1,14 @@
 // Burkina Faso — conflict pressure on school-age population.
-// Three layers:
+// Two layers on the map:
 //   - 17 region polygons coloured by events per 100,000 children (choropleth)
-//   - small dots for OSM schools (white stroke for crisp contrast)
 //   - amber triangles for recent IDMC displacement events
-// Header strip shows total events / displaced / school-age children.
+// Header strip shows totals (events / displaced / children / schools).
+// School counts per region are surfaced inside each region popup.
 
 const BF_CENTER = [12.4, -1.5];
 const BF_ZOOM = 7;
 
 const map = L.map("map", { zoomControl: true }).setView(BF_CENTER, BF_ZOOM);
-const schoolsCanvas = L.canvas({ padding: 0.3 });
 
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution:
@@ -147,9 +146,13 @@ function renderHeaderStats(events, displacement) {
     const totalChildren = events.regions.reduce(
         (s, r) => s + (r.school_age_pop || 0), 0,
     );
+    const totalSchools = events.regions.reduce(
+        (s, r) => s + (r.schools_osm || 0), 0,
+    );
     setText("stat-events", fmt(totalEvents));
     setText("stat-displaced", fmt(displacement.total_displaced));
     setText("stat-children", fmtCompact(totalChildren));
+    setText("stat-schools", fmt(totalSchools));
 }
 
 function safe(label, fn) {
@@ -159,14 +162,12 @@ function safe(label, fn) {
 Promise.all([
     fetch("data/regions.geojson").then((r) => r.json()),
     fetch("data/events-by-region.json").then((r) => r.json()),
-    fetch("data/schools.json").then((r) => r.json()),
     fetch("data/displacement.json").then((r) => r.json()),
 ])
-    .then(([regions, events, schools, displacement]) => {
+    .then(([regions, events, displacement]) => {
         console.log("[map] data loaded:",
             regions.features.length, "regions /",
             events.regions.length, "events records /",
-            schools.length, "schools /",
             displacement.events.length, "displacement events");
 
         safe("header", () => renderHeaderStats(events, displacement));
@@ -228,19 +229,6 @@ Promise.all([
                     });
                 },
             }).addTo(map);
-        });
-
-        safe("schools", () => {
-            schools.forEach(([lat, lon]) => {
-                L.circleMarker([lat, lon], {
-                    renderer: schoolsCanvas,
-                    radius: 1.8,
-                    weight: 0.6,
-                    color: "#ffffff",
-                    fillColor: "#1e293b",
-                    fillOpacity: 0.85,
-                }).addTo(map);
-            });
         });
 
         safe("displacement", () => {

@@ -53,8 +53,8 @@ header h1 {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 8px 14px;
-    min-width: 110px;
+    padding: 8px 12px;
+    min-width: 96px;
     text-align: right;
 }
 
@@ -186,16 +186,6 @@ header h1 {
 .dot {
     display: inline-block;
     flex-shrink: 0;
-}
-
-.dot.school {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #1e293b;
-    border: 1px solid #ffffff;
-    box-shadow: 0 0 0 0.5px rgba(15, 23, 42, 0.25);
-    box-sizing: border-box;
 }
 
 .dot.displacement {
