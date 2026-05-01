@@ -19,6 +19,47 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     maxZoom: 18,
 }).addTo(map);
 
+// "Reset view" control next to the zoom +/- buttons.
+const ResetViewControl = L.Control.extend({
+    options: { position: "topleft" },
+    onAdd: function () {
+        const div = L.DomUtil.create("div", "leaflet-bar leaflet-control");
+        const link = L.DomUtil.create("a", "reset-view-btn", div);
+        link.href = "#";
+        link.title = "Reset view to Burkina Faso";
+        link.setAttribute("aria-label", "Reset view");
+        link.innerHTML = "↺";
+        L.DomEvent.on(link, "click", L.DomEvent.preventDefault);
+        L.DomEvent.on(link, "click", () => {
+            map.closePopup();
+            map.setView(BF_CENTER, BF_ZOOM);
+        });
+        return div;
+    },
+});
+new ResetViewControl().addTo(map);
+
+// About panel toggle.
+function toggleAbout(show) {
+    const panel = document.getElementById("about-panel");
+    const backdrop = document.getElementById("about-backdrop");
+    if (!panel || !backdrop) return;
+    const open = show ?? panel.classList.contains("hidden");
+    panel.classList.toggle("hidden", !open);
+    backdrop.classList.toggle("hidden", !open);
+}
+document.addEventListener("DOMContentLoaded", () => {
+    const open = document.getElementById("about-toggle");
+    const close = document.getElementById("about-close");
+    const backdrop = document.getElementById("about-backdrop");
+    if (open) open.addEventListener("click", () => toggleAbout(true));
+    if (close) close.addEventListener("click", () => toggleAbout(false));
+    if (backdrop) backdrop.addEventListener("click", () => toggleAbout(false));
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") toggleAbout(false);
+    });
+});
+
 function fmt(n) {
     return n.toLocaleString("en-US");
 }
@@ -193,6 +234,11 @@ Promise.all([
                                 weight: 1.5,
                                 color: "#ffffff",
                                 fillOpacity: 0.7,
+                            }),
+                        click: (e) =>
+                            map.fitBounds(e.target.getBounds(), {
+                                padding: [40, 40],
+                                maxZoom: 9,
                             }),
                     });
                 },
