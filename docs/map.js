@@ -1,12 +1,9 @@
 // Burkina Faso — conflict pressure on school-age population.
-// Loads four small JSON files prepared by scripts/02_prepare_map_data.py
-// and renders:
+// Three layers:
 //   - 17 region polygons coloured by events per 100,000 children (choropleth)
-//   - red circle markers per region sized by absolute event count
 //   - small blue dots for OSM schools
 //   - amber triangles for recent IDMC displacement events
-// Plus a "highest pressure" panel listing the top 3 regions and a
-// header strip showing total events / displaced / school-age children.
+// Header strip shows total events / displaced / school-age children.
 
 const BF_CENTER = [12.4, -1.5];
 const BF_ZOOM = 7;
@@ -28,7 +25,7 @@ function fmt(n) {
 
 function fmtCompact(n) {
     if (n >= 1000000) return (n / 1000000).toFixed(2).replace(/\.?0+$/, "") + "M";
-    if (n >= 10_000) return (n / 1000).toFixed(0) + "k";
+    if (n >= 10000) return (n / 1000).toFixed(0) + "k";
     return fmt(n);
 }
 
@@ -46,19 +43,14 @@ function fmtFullDate(iso) {
     });
 }
 
-function radiusFor(events, maxEvents) {
-    const minR = 6, maxR = 32;
-    return minR + (maxR - minR) * Math.sqrt(events / maxEvents);
-}
-
-// Sequential red ramp keyed to events per 100,000 school-age children.
+// YlOrRd 5-class sequential ramp keyed to events per 100,000 children.
+// No grey fallback — every region gets a meaningful colour from the scale.
 function colorForRate(rate) {
-    if (rate >= 100) return "#7f1d1d";
-    if (rate >= 50) return "#dc2626";
-    if (rate >= 30) return "#f87171";
-    if (rate >= 10) return "#fecaca";
-    if (rate > 0) return "#fef2f2";
-    return "#f3f4f6";
+    if (rate >= 100) return "#b10026";
+    if (rate >= 50) return "#fc4e2a";
+    if (rate >= 30) return "#fd8d3c";
+    if (rate >= 10) return "#feb24c";
+    return "#fed976";
 }
 
 function displacementIcon(figure, maxFigure) {
@@ -120,34 +112,6 @@ function setText(id, value) {
     if (el) el.textContent = value;
 }
 
-function setHtml(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = value;
-}
-
-function renderHotspots(events) {
-    const ranked = events.regions
-        .filter((r) => r.school_age_pop)
-        .map((r) => ({
-            ...r,
-            rate: (r.events / r.school_age_pop) * 100000,
-        }))
-        .sort((a, b) => b.rate - a.rate)
-        .slice(0, 3);
-
-    const html = ranked
-        .map(
-            (r, i) => `
-            <div class="hotspot-row">
-                <span class="rank">${i + 1}</span>
-                <span class="name">${r.region}</span>
-                <span class="rate">${r.rate.toFixed(1)}</span>
-            </div>`,
-        )
-        .join("");
-    setHtml("hotspots-body", html);
-}
-
 function renderHeaderStats(events, displacement) {
     const totalEvents = events.regions.reduce((s, r) => s + r.events, 0);
     const totalChildren = events.regions.reduce(
@@ -180,7 +144,6 @@ Promise.all([
             displacement.events.length, "displacement events");
 
         safe("header", () => renderHeaderStats(events, displacement));
-        safe("hotspots", () => renderHotspots(events));
 
         const byPcode = Object.fromEntries(
             events.regions.map((r) => [r.pcode, r]),
@@ -195,25 +158,34 @@ Promise.all([
                             ? (r.events / r.school_age_pop) * 100000
                             : 0;
                     return {
-                        color: "#64748b",
-                        weight: 0.8,
+                        color: "#ffffff",
+                        weight: 1.5,
                         fillColor: colorForRate(rate),
-                        fillOpacity: 0.78,
-                        opacity: 0.9,
+                        fillOpacity: 0.85,
+                        opacity: 1,
                     };
                 },
                 onEachFeature: (feature, layer) => {
                     const r = byPcode[feature.properties.pcode];
                     layer.bindTooltip(feature.properties.name, {
-                        sticky: true,
+                        permanent: true,
+                        direction: "center",
                         className: "region-label",
                     });
                     if (r) layer.bindPopup(popupHtml(r), { maxWidth: 320 });
                     layer.on({
                         mouseover: (e) =>
-                            e.target.setStyle({ weight: 1.8, color: "#0f172a" }),
+                            e.target.setStyle({
+                                weight: 2.5,
+                                color: "#0f172a",
+                                fillOpacity: 0.95,
+                            }),
                         mouseout: (e) =>
-                            e.target.setStyle({ weight: 0.8, color: "#64748b" }),
+                            e.target.setStyle({
+                                weight: 1.5,
+                                color: "#ffffff",
+                                fillOpacity: 0.85,
+                            }),
                     });
                 },
             }).addTo(map);
@@ -223,29 +195,11 @@ Promise.all([
             schools.forEach(([lat, lon]) => {
                 L.circleMarker([lat, lon], {
                     renderer: schoolsCanvas,
-                    radius: 2,
+                    radius: 1.8,
                     stroke: false,
-                    fillColor: "#1d4ed8",
-                    fillOpacity: 0.55,
+                    fillColor: "#1e3a8a",
+                    fillOpacity: 0.5,
                 }).addTo(map);
-            });
-        });
-
-        safe("conflict markers", () => {
-            const maxEvents = Math.max(
-                ...events.regions.map((r) => r.events),
-            );
-            events.regions.forEach((r) => {
-                if (!r.events) return;
-                L.circleMarker([r.lat, r.lon], {
-                    radius: radiusFor(r.events, maxEvents),
-                    color: "#450a0a",
-                    weight: 1.5,
-                    fillColor: "#dc2626",
-                    fillOpacity: 0.85,
-                })
-                    .bindPopup(popupHtml(r), { maxWidth: 320 })
-                    .addTo(map);
             });
         });
 
