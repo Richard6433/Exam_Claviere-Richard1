@@ -53,14 +53,14 @@ function colorForRate(rate) {
     return "#fed976";
 }
 
-function displacementIcon(figure, maxFigure, ageClass) {
-    const minH = 11, maxH = 26;
+function displacementIcon(figure, maxFigure) {
+    const minH = 14, maxH = 36;
     const h = minH + (maxH - minH) * Math.sqrt(figure / maxFigure);
     const w = h * 1.1;
     const halfW = w / 2;
     return L.divIcon({
         className: "displacement-icon-wrap",
-        html: `<div class="displacement-tri ${ageClass}"
+        html: `<div class="displacement-tri"
                     style="border-left-width:${halfW}px;
                            border-right-width:${halfW}px;
                            border-bottom-width:${h}px"></div>`,
@@ -72,54 +72,50 @@ function displacementIcon(figure, maxFigure, ageClass) {
 function displacementPopupHtml(e) {
     const dateRange =
         e.start_date && e.end_date && e.start_date !== e.end_date
-            ? `${fmtFullDate(e.start_date)} – ${fmtFullDate(e.end_date)}`
+            ? `Between ${fmtFullDate(e.start_date)} and ${fmtFullDate(e.end_date)}`
             : fmtFullDate(e.date);
     const attribution = e.attribution
         ? `<li>According to <strong>${e.attribution}</strong></li>`
         : "";
     return `
         <div class="popup popup-disp">
+            <div class="disp-date">${fmtFullDate(e.date)}</div>
+            <h3>${fmt(e.figure)} displaced</h3>
+            <div class="disp-loc">${e.location}</div>
             <ul class="disp-facts">
-                <li><strong>${fmt(e.figure)}</strong> people displaced</li>
                 <li>${dateRange}</li>
                 ${attribution}
-                <li>${e.location}</li>
             </ul>
         </div>`;
 }
 
-function popupHtml(r, dispWindowLabel) {
-    const pop = r.school_age_pop;
-    const schools = r.schools_osm;
-    const displaced = r.displaced_recent || 0;
-    const rate = pop ? (r.events / pop) * 100000 : null;
-    const schoolsLine = schools
-        ? ` · <strong>${fmt(schools)}</strong> schools mapped (OSM)`
-        : "";
-    const childrenRow = pop
-        ? `<div class="children-row">
-               <strong>${fmt(pop)}</strong> school-age children (5-14)
-               · <strong>${rate.toFixed(1)}</strong> events per 100,000 children
-               ${schoolsLine}
-           </div>`
-        : "";
-    const displacedRow = displaced
-        ? `<div class="displaced-row">
-               <strong>${fmt(displaced)}</strong> people newly displaced from this region
-               ${dispWindowLabel ? `<span class="disp-window">(${dispWindowLabel})</span>` : ""}
-           </div>`
-        : "";
-
+function popupHtml(r) {
+    const facts = [`<li><strong>${fmt(r.events)}</strong> conflict events</li>`];
+    if (r.school_age_pop) {
+        const rate = (r.events / r.school_age_pop) * 100000;
+        facts.push(
+            `<li><strong>${fmt(r.school_age_pop)}</strong> school-age children (5-14)</li>`,
+        );
+        facts.push(
+            `<li><strong>${rate.toFixed(1)}</strong> events per 100,000 children</li>`,
+        );
+    }
+    if (r.schools_osm) {
+        facts.push(
+            `<li><strong>${fmt(r.schools_osm)}</strong> schools mapped (OSM)</li>`,
+        );
+    }
+    if (r.displaced_recent) {
+        facts.push(
+            `<li><strong>${fmt(r.displaced_recent)}</strong> people newly displaced</li>`,
+        );
+    }
     return `
-        <div class="popup">
+        <div class="popup popup-region">
             <h3>${r.region}</h3>
-            <div class="period">${fmtDate(r.period_start)} — ${fmtDate(r.period_end)}</div>
-            <div class="hero-stat">
-                <span class="num">${fmt(r.events)}</span>
-                <span class="label">conflict events (last 12 months)</span>
-            </div>
-            ${childrenRow}
-            ${displacedRow}
+            <ul class="region-facts">
+                ${facts.join("")}
+            </ul>
         </div>`;
 }
 
@@ -138,7 +134,7 @@ function renderHeaderStats(events, displacement) {
     setText("stat-children", fmtCompact(totalChildren));
     setText(
         "header-period",
-        `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)} · 12-month window`,
+        `${fmtDate(events.period_start)} → ${fmtDate(events.period_end)}`,
     );
 }
 
@@ -184,9 +180,6 @@ Promise.all([
         safe("header", () => renderHeaderStats(events, displacement));
         safe("insight", () => renderInsightBanner(events, displacement));
 
-        const dispWindowLabel =
-            `${fmtDate(displacement.period_start)} – ${fmtDate(displacement.period_end)}`;
-
         const byPcode = Object.fromEntries(
             events.regions.map((r) => [r.pcode, r]),
         );
@@ -214,7 +207,7 @@ Promise.all([
                         direction: "center",
                         className: "region-label",
                     });
-                    if (r) layer.bindPopup(popupHtml(r, dispWindowLabel), { maxWidth: 320 });
+                    if (r) layer.bindPopup(popupHtml(r), { maxWidth: 320 });
                     layer.on({
                         mouseover: (e) =>
                             e.target.setStyle({
@@ -249,18 +242,9 @@ Promise.all([
             const maxFigure = Math.max(
                 ...displacement.events.map((e) => e.figure),
             );
-            const maxDateMs = Math.max(
-                ...displacement.events.map((e) => new Date(e.date).getTime()),
-            );
-            const dayMs = 1000 * 60 * 60 * 24;
             displacement.events.forEach((e) => {
-                const daysOld = (maxDateMs - new Date(e.date).getTime()) / dayMs;
-                const ageClass =
-                    daysOld < 30 ? "fresh"
-                    : daysOld < 90 ? "recent"
-                    : "older";
                 L.marker([e.lat, e.lon], {
-                    icon: displacementIcon(e.figure, maxFigure, ageClass),
+                    icon: displacementIcon(e.figure, maxFigure),
                 })
                     .bindPopup(displacementPopupHtml(e), { maxWidth: 320 })
                     .addTo(map);
