@@ -78,39 +78,40 @@ function displacementPopupHtml(e) {
         <div class="popup popup-disp">
             <div class="disp-date">${dateRange}</div>
             <h3>${fmt(e.figure)} displaced</h3>
-            <ul class="disp-facts">
-                <li>${e.location}</li>
-            </ul>
+            <div class="disp-loc">${e.location}</div>
         </div>`;
 }
 
 function popupHtml(r) {
-    const facts = [`<li><strong>${fmt(r.events)}</strong> conflict events</li>`];
-    if (r.school_age_pop) {
-        const rate = (r.events / r.school_age_pop) * 100000;
-        facts.push(
-            `<li><strong>${fmt(r.school_age_pop)}</strong> school-age children (5-14)</li>`,
-        );
-        facts.push(
-            `<li><strong>${rate.toFixed(1)}</strong> events per 100,000 children</li>`,
-        );
-    }
-    if (r.schools_osm) {
-        facts.push(
-            `<li><strong>${fmt(r.schools_osm)}</strong> schools mapped (OSM)</li>`,
-        );
-    }
-    if (r.displaced_recent) {
-        facts.push(
-            `<li><strong>${fmt(r.displaced_recent)}</strong> people newly displaced</li>`,
-        );
-    }
+    const pop = r.school_age_pop;
+    const schools = r.schools_osm;
+    const displaced = r.displaced_recent || 0;
+    const rate = pop ? (r.events / pop) * 100000 : null;
+    const schoolsLine = schools
+        ? ` · <strong>${fmt(schools)}</strong> schools mapped (OSM)`
+        : "";
+    const childrenRow = pop
+        ? `<div class="children-row">
+               <strong>${fmt(pop)}</strong> school-age children (5-14)
+               · <strong>${rate.toFixed(1)}</strong> events per 100,000 children
+               ${schoolsLine}
+           </div>`
+        : "";
+    const displacedRow = displaced
+        ? `<div class="displaced-row">
+               <strong>${fmt(displaced)}</strong> people newly displaced
+           </div>`
+        : "";
+
     return `
         <div class="popup popup-region">
             <h3>${r.region}</h3>
-            <ul class="region-facts">
-                ${facts.join("")}
-            </ul>
+            <div class="hero-stat">
+                <span class="num">${fmt(r.events)}</span>
+                <span class="label">conflict events</span>
+            </div>
+            ${childrenRow}
+            ${displacedRow}
         </div>`;
 }
 

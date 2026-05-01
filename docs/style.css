@@ -251,6 +251,72 @@ path.leaflet-interactive {
 /* ----- Popups ----- */
 .popup {
     font-family: inherit;
+    min-width: 240px;
+}
+
+.popup h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+}
+
+.popup .hero-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    background: #fff7ed;
+    border-radius: 6px;
+    border-left: 3px solid #fc4e2a;
+}
+
+.popup .hero-stat .num {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.popup .hero-stat .label {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.popup .children-row {
+    background: #fef2f2;
+    border-left: 3px solid #b10026;
+    padding: 8px 10px;
+    font-size: 12px;
+    color: #1f2937;
+    line-height: 1.5;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 8px;
+}
+
+.popup .children-row strong {
+    color: #7f1d1d;
+    font-weight: 600;
+}
+
+.popup .displaced-row {
+    background: #f1f5f9;
+    border-left: 3px solid #18181b;
+    padding: 8px 10px;
+    font-size: 12px;
+    color: #1f2937;
+    line-height: 1.5;
+    border-radius: 0 4px 4px 0;
+}
+
+.popup .displaced-row strong {
+    color: #0f172a;
+    font-weight: 700;
 }
 
 /* ----- Displacement marker + popup ----- */
@@ -289,8 +355,8 @@ path.leaflet-interactive {
 
 .popup-disp h3 {
     color: #18181b;
-    font-size: 20px;
-    margin: 0 0 4px 0;
+    font-size: 22px;
+    margin: 0 0 6px 0;
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.01em;
@@ -299,31 +365,8 @@ path.leaflet-interactive {
 .popup-disp .disp-loc {
     font-size: 13px;
     color: #1f2937;
-    margin-bottom: 10px;
     font-weight: 500;
-}
-
-.popup-disp .disp-facts {
-    margin: 8px 0 0 0;
-    padding: 8px 0 0 18px;
-    list-style: disc;
-    color: #1f2937;
-    font-size: 12.5px;
-    line-height: 1.55;
-    border-top: 1px solid #e2e8f0;
-}
-
-.popup-disp .disp-facts li {
-    margin: 3px 0;
-}
-
-.popup-disp .disp-facts li::marker {
-    color: #94a3b8;
-}
-
-.popup-disp .disp-facts strong {
-    color: #18181b;
-    font-weight: 600;
+    margin: 0;
 }
 
 .popup.popup-region {
