@@ -296,27 +296,27 @@ path.leaflet-interactive {
 .popup .hero-stat {
     display: flex;
     align-items: baseline;
-    gap: 8px;
-    padding: 10px 12px;
+    gap: 10px;
+    padding: 4px 0 12px 0;
     margin-bottom: 10px;
-    background: #fff7ed;
-    border-radius: 6px;
-    border-left: 3px solid #fc4e2a;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .popup .hero-stat .num {
-    font-size: 26px;
+    font-size: 30px;
     font-weight: 700;
     color: #0f172a;
     line-height: 1;
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
 }
 
 .popup .hero-stat .label {
     font-size: 11px;
     color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
+    font-weight: 500;
 }
 
 .popup-region .region-facts {
