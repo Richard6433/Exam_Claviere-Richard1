@@ -58,7 +58,6 @@ A machine-readable copy of the same table lives at
 - **As-of** — 2026-04-30 (live query at request time)
 - **Granularity** — Point per school (named or unnamed)
 - **Role on map** — Small dark dots at each school's coordinates; school count per region in popup
-- **Notes** — Crowd-sourced and incomplete. Coverage is uneven by region — sparsest in the most conflict-affected zones (estimated ~35% of the Burkinabè Ministry of Education's total).
 
 ## 5. IDMC Internal Displacements Updates (event-level)
 
