@@ -1,18 +1,14 @@
 # Burkina Faso — conflict pressure on school-age population
 
 A data-driven proposal artifact for the **Education Bridge Initiative**
-RFP. Demonstrates how open data can support EBI's planning and
-prioritisation in conflict-affected education programming.
+RFP.
 
 ## Live map
 
 🌐 **<https://richard6433.github.io/Exam_Claviere-Richard1/docs/>**
 
-A choropleth of Burkina Faso's 17 regions, ranked by ACLED conflict
-events per 100,000 school-age children over the last 12 months. Recent
-IDMC displacement events sit on top as black triangles; OSM-mapped
-schools as dark dots. Click any region for the four-stat snapshot
-(events / children / rate / schools / IDPs).
+A choropleth of Burkina Faso's 17 regions, ranked by conflict
+events per 100,000 school-age children over the last 12 months. 
 
 ## Repository layout
 
